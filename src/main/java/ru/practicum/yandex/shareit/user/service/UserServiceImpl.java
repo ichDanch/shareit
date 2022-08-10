@@ -18,13 +18,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) {
+    public User createUser(User user) {
         return userStorage.create(user);
     }
 
     @Override
-    public User patch(User user) {
-        get(user.getId());
+    public User patchUser(User user) {
+        getUserById(user.getId());
         return userStorage.patch(user);
     }
 
@@ -34,14 +34,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(long id) {
+    public User getUserById(long id) {
         return userStorage.getUser(id)
                 .orElseThrow(() ->
                         new UserNotFoundException("Does not contain user with this id or id is invalid " + id));
     }
 
     @Override
-    public void delete(long id) {
+    public void deleteUserById(long id) {
         userStorage.delete(id);
     }
 }

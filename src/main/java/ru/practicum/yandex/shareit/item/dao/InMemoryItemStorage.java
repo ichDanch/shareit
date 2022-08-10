@@ -4,14 +4,11 @@ import org.springframework.stereotype.Component;
 import ru.practicum.yandex.shareit.item.model.Item;
 import ru.practicum.yandex.shareit.user.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class InMemoryItemStorage implements ItemStorage {
-    private HashMap<Long, Item> items = new HashMap<>();
+    private Map<Long, Item> items = new HashMap<>();
     private long ITEM_COUNT;
 
     @Override

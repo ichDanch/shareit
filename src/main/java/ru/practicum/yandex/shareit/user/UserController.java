@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -33,36 +34,36 @@ public class UserController {
         userService.create(newUser);
         return userDto;*/
         //проверка на
-        EmailDuplicateAndNullValidation(user);
+        emailDuplicateAndNullValidation(user);
 
-        userService.create(user);
+        userService.createUser(user);
         return userMapper.toDto(user);
     }
 
     @PatchMapping("/{id}")
     public UserDto patch(@Valid @NotNull @RequestBody UserDto userDto,
                          @PathVariable long id) {
-        EmailDuplicateAndNullValidationDto(userDto);
-        User user = userService.get(id);  // тут уже есть проверка на налчиие в базе
+        emailDuplicateAndNullValidationDto(userDto);
+        User user = userService.getUserById(id);  // тут уже есть проверка на налчиие в базе
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
-        User patchedUser = userService.patch(user);
+        User patchedUser = userService.patchUser(user);
 
         return userMapper.toDto(patchedUser);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@Positive @PathVariable long id) {
-        userService.delete(id);
+        userService.deleteUserById(id);
     }
 
     @GetMapping("/{id}")
     public UserDto get(@PositiveOrZero @PathVariable long id) {
-        User getUser = userService.get(id);
+        User getUser = userService.getUserById(id);
         return userMapper.toDto(getUser);
     }
 
@@ -74,29 +75,47 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    private void EmailDuplicateAndNullValidation(User user) {
+    private void emailDuplicateAndNullValidation(User user) {
         if (user.getEmail() == null) {
             throw new ValidationException("User email must not be null");
         }
-        var emailDuplicateValidation = userService.getAllUsers()
+        userService.getAllUsers()
+                .stream()
+                .filter(u -> u.getEmail().equals(user.getEmail()))
+                .findFirst()
+                .ifPresent(u -> {
+                    throw new EmailDuplicateException("This email is already exists");
+                });
+
+       /* Optional<User> emailDuplicateValidation = userService.getAllUsers()
                 .stream()
                 .filter(u -> u.getEmail().equals(user.getEmail()))
                 .findFirst();
         emailDuplicateValidation.ifPresent(u -> {
             throw new EmailDuplicateException("This email is already exists");
-        });
+        });*/
     }
 
-    private void EmailDuplicateAndNullValidationDto(UserDto userDto) {
-       /* if (userDto.getEmail() == null) {
+    private void emailDuplicateAndNullValidationDto(UserDto userDto) {
+        userService.getAllUsers()
+                .stream()
+                .filter(u -> u.getEmail().equals(userDto.getEmail()))
+                .findFirst()
+                .ifPresent(u -> {
+                    throw new EmailDuplicateException("This email is already exists");
+                });
+
+        /* if (userDto.getEmail() == null) {
             throw new ValidationException("UserDto email must not be null");
         }*/
-        var emailDuplicateValidation = userService.getAllUsers()
+
+       /* Optional<User> emailDuplicateValidation = userService.getAllUsers()
                 .stream()
                 .filter(u -> u.getEmail().equals(userDto.getEmail()))
                 .findFirst();
         emailDuplicateValidation.ifPresent(u -> {
             throw new EmailDuplicateException("This email is already exists");
         });
+        */
     }
 }

@@ -12,6 +12,6 @@ public class Booking {
     private LocalDate start;
     private LocalDate end;
     private Item item;
-    private User booker; // пользователь, который осуществляет бронирование;
+    private User booker;
     private Status status;
 }

@@ -3,14 +3,11 @@ package ru.practicum.yandex.shareit.user.dao;
 import org.springframework.stereotype.Component;
 import ru.practicum.yandex.shareit.user.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private HashMap<Long, User> users = new HashMap<>();
+    private Map<Long, User> users = new HashMap<>();
     private long USER_COUNT;
 
     @Override

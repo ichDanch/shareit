@@ -2,12 +2,9 @@ package ru.practicum.yandex.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.yandex.shareit.exceptions.ItemNotFoundException;
-import ru.practicum.yandex.shareit.exceptions.UserNotFoundException;
 import ru.practicum.yandex.shareit.item.ItemMapper;
 import ru.practicum.yandex.shareit.item.dao.ItemStorage;
-import ru.practicum.yandex.shareit.item.dto.ItemDto;
 import ru.practicum.yandex.shareit.item.model.Item;
 
 import java.util.ArrayList;
@@ -26,13 +23,13 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Item create(Item item) {
+    public Item createItem(Item item) {
         return itemStorage.create(item);
     }
 
     @Override
-    public Item patch(Item item) {
-        get(item.getId());
+    public Item patchItem(Item item) {
+        getItemById(item.getId());
         return itemStorage.patch(item);
     }
 
@@ -42,19 +39,19 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Item get(long id) {
+    public Item getItemById(long id) {
         return itemStorage.getItem(id)
                 .orElseThrow(() ->
                         new ItemNotFoundException("Does not contain item with this id or id is invalid " + id));
     }
 
     @Override
-    public void delete(long id) {
+    public void deleteItemById(long id) {
         itemStorage.delete(id);
     }
 
     @Override
-    public List<Item> search(String text) {
+    public List<Item> itemsByNameAndDescription(String text) {
 
             //1. возвращает только доступные для аренды вещи
             //2. искать текст в названии и описании

@@ -46,10 +46,10 @@ public class ItemController {
             throw new ValidationException("itemDto description must not be null");
         }
 
-        userService.get(userId);  //проверяем наличие пользователя
+        userService.getUserById(userId);  //проверяем наличие пользователя
         Item toItem = itemMapper.toItem(itemDto);
         toItem.setOwner(userId);
-        Item item = itemService.create(toItem);
+        Item item = itemService.createItem(toItem);
         return itemMapper.toDto(item);   // вернуть айди, имя, описание, стастус
     }
 
@@ -58,7 +58,7 @@ public class ItemController {
                          @PathVariable long itemId,
                          @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
 
-        Item item = itemService.get(itemId);// тут уже есть проверка на налчиие в базе
+        Item item = itemService.getItemById(itemId);// тут уже есть проверка на налчиие в базе
         checkOwner(userId, item);
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
@@ -70,7 +70,7 @@ public class ItemController {
             item.setAvailable(itemDto.getAvailable());
         }
 
-        Item patchedItem = itemService.patch(item);
+        Item patchedItem = itemService.patchItem(item);
         return itemMapper.toDto(patchedItem);
     }
 
@@ -87,21 +87,21 @@ public class ItemController {
     @GetMapping({"/{id}"})
     public ItemDto get(@PositiveOrZero @PathVariable int id,
                        @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        Item item = itemService.get(id);
+        Item item = itemService.getItemById(id);
         return itemMapper.toDto(item);
     }
 
     @DeleteMapping({"/{id}"})
     public void deleteItem(@PositiveOrZero @PathVariable int id,
                            @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        Item item = itemService.get(id);
+        Item item = itemService.getItemById(id);
         checkOwner(userId, item);
-        itemService.delete(id);
+        itemService.deleteItemById(id);
     }
 
     @GetMapping({"/search"})
     public List<ItemDto> search(@RequestParam String text) {
-        return itemService.search(text)
+        return itemService.itemsByNameAndDescription(text)
                 .stream()
                 .map(itemMapper::toDto)
                 .collect(Collectors.toList());
