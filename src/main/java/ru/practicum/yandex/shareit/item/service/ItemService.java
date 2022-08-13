@@ -1,3 +1,4 @@
+/*
 package ru.practicum.yandex.shareit.item.service;
 
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
@@ -13,3 +14,4 @@ public interface ItemService {
     void delete(long id);
     List<Item> search(String text);
 }
+*/

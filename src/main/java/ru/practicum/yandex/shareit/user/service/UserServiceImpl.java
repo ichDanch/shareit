@@ -1,3 +1,4 @@
+/*
 package ru.practicum.yandex.shareit.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,3 +46,4 @@ public class UserServiceImpl implements UserService {
         userStorage.delete(id);
     }
 }
+*/

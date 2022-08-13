@@ -1,15 +1,12 @@
-/*
 package ru.practicum.yandex.shareit.item;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.yandex.shareit.exceptions.UserNotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
 import ru.practicum.yandex.shareit.item.model.Item;
-import ru.practicum.yandex.shareit.item.service.ItemService;
-import ru.practicum.yandex.shareit.user.model.User;
+import ru.practicum.yandex.shareit.item.service.ItemServiceJpa;
 import ru.practicum.yandex.shareit.user.service.UserServiceJpa;
 
 import javax.validation.Valid;
@@ -18,18 +15,16 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @RestController
 @RequestMapping("/items")
-public class ItemController {
-
-    private ItemService itemService;
+public class ItemControllerJpa {
+    private ItemServiceJpa itemServiceJpa;
     private UserServiceJpa userServiceJpa;
     private ItemMapper itemMapper;
 
     @Autowired
-    public ItemController(ItemService itemService, UserServiceJpa userServiceJpa, ItemMapper itemMapper) {
-        this.itemService = itemService;
+    public ItemControllerJpa(ItemServiceJpa itemServiceJpa, UserServiceJpa userServiceJpa, ItemMapper itemMapper) {
+        this.itemServiceJpa = itemServiceJpa;
         this.userServiceJpa = userServiceJpa;
         this.itemMapper = itemMapper;
     }
@@ -37,7 +32,8 @@ public class ItemController {
     @PostMapping
     public ItemDto create(@Valid @NotNull @RequestBody ItemDto itemDto,  // Приходит имя, описание, статус
                           @RequestHeader("X-Sharer-User-Id") long userId) {
-
+        // 1. перенести логику в сервис
+        // 2. проверку вынести в отделньый метод
         if (itemDto.getAvailable() == null) {
             throw new ValidationException("itemDto available must not be null");
         }
@@ -48,11 +44,10 @@ public class ItemController {
             throw new ValidationException("itemDto description must not be null");
         }
 
-        userServiceJpa.findOne(userId);  //проверяем наличие пользователя
+        userServiceJpa.findById(userId);  //проверяем наличие пользователя
         Item toItem = itemMapper.toItem(itemDto);
-        User owner = userServiceJpa.findOne(userId);
-        toItem.setOwner(owner);
-        Item item = itemService.create(toItem);
+        toItem.setOwner(userId);
+        Item item = itemServiceJpa.save(toItem);
         return itemMapper.toDto(item);   // вернуть айди, имя, описание, стастус
     }
 
@@ -60,8 +55,10 @@ public class ItemController {
     public ItemDto patch(@Valid @RequestBody ItemDto itemDto,
                          @PathVariable long itemId,
                          @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
+        // 1. перенести логику в сервис
+        // 2. проверку вынести в отделньый метод
 
-        Item item = itemService.get(itemId);// тут уже есть проверка на налчиие в базе
+        Item item = itemServiceJpa.findById(itemId);// тут уже есть проверка на налчиие в базе
         checkOwner(userId, item);
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
@@ -72,50 +69,45 @@ public class ItemController {
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
-
-        Item patchedItem = itemService.patch(item);
+        Item patchedItem = itemServiceJpa.save(item);
         return itemMapper.toDto(patchedItem);
-    }
-
-
-    @GetMapping
-    public List<ItemDto> getAllItem(@PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.getAllItems()
-                .stream()
-                .filter(u -> u.getOwner().getId() == userId || u.getOwner() == null)
-                .map(itemMapper::toDto)
-                .collect(Collectors.toList());
     }
 
     @GetMapping({"/{id}"})
     public ItemDto get(@PositiveOrZero @PathVariable int id,
                        @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        Item item = itemService.get(id);
+        Item item = itemServiceJpa.findById(id);
         return itemMapper.toDto(item);
     }
 
-    @DeleteMapping({"/{id}"})
-    public void deleteItem(@PositiveOrZero @PathVariable int id,
-                           @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        Item item = itemService.get(id);
-        checkOwner(userId, item);
-        itemService.delete(id);
+    @GetMapping
+    public List<ItemDto> findAllUserItem(@PositiveOrZero @RequestHeader("X-Sharer-User-Id") long ownerId) {
+        return itemServiceJpa.findAllUserItem(ownerId)
+                .stream()
+                .map(itemMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping({"/search"})
-    public List<ItemDto> search(@RequestParam String text) {
-        return itemService.search(text)
+    public List<ItemDto> itemsByNameAndDescription(@RequestParam String text) {
+        return itemServiceJpa.itemsByNameAndDescription(text)
                 .stream()
                 .map(itemMapper::toDto)
                 .collect(Collectors.toList());
 
     }
 
+    @DeleteMapping({"/{id}"})
+    public void deleteItem(@PositiveOrZero @PathVariable int id,
+                           @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
+        Item item = itemServiceJpa.findById(id);
+        checkOwner(userId, item);
+        itemServiceJpa.deleteItemById(id);
+    }
+
     private void checkOwner(long userId, Item item) {
-        if (item.getOwner() == null || item.getOwner().getId() != userId) {
+        if (item.getOwner() != userId) {
             throw new UserNotFoundException("Only the owner can change item");
         }
     }
-
 }
-*/
