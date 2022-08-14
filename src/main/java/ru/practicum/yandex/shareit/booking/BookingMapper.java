@@ -13,12 +13,11 @@ public class BookingMapper {
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
-                booking.getItemId());
+                booking.getItem().getId());
     }
 
     public Booking toBooking(BookingDto bookingDto) {
         return new Booking(
-                bookingDto.getItemId(),
                 bookingDto.getStart(),
                 bookingDto.getEnd()
         );

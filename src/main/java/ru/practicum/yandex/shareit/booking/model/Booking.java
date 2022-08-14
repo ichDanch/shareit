@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.yandex.shareit.booking.Status;
+import ru.practicum.yandex.shareit.item.model.Item;
+import ru.practicum.yandex.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,16 +26,18 @@ public class Booking {
     @Column(name = "end_date")
    // @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime end;
-    @Column (name ="item_id")
-    private long itemId;
-    @Column (name = "booker_id")
-    private long bookerId;
+    //@Column (name ="item_id")
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+    @ManyToOne
+    @JoinColumn (name = "booker_id")
+    private User booker;
     @Column (name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public Booking(long itemId, LocalDateTime start, LocalDateTime end) {
-        this.itemId = itemId;
+    public Booking( LocalDateTime start, LocalDateTime end) {
         this.start = start;
         this.end = end;
     }

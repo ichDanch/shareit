@@ -1,4 +1,3 @@
-/*
 package ru.practicum.yandex.shareit.booking;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import ru.practicum.yandex.shareit.exceptions.ValidationException;
 import ru.practicum.yandex.shareit.item.model.Item;
 import ru.practicum.yandex.shareit.item.ItemService;
 import ru.practicum.yandex.shareit.user.UserService;
+import ru.practicum.yandex.shareit.user.model.User;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -44,17 +44,35 @@ public class BookingController {
         // 3. а затем подтверждён владельцем вещи
         // 4. После создания запрос находится в статусе WAITING
 
-        bookingValidation(bookingDto, userId);
+        User  bookingCreator = userService.findById(userId);               //проверяем наличие пользователя
+
+        long itemId = bookingDto.getItemId();
+        Item item = itemService.findById(itemId);  // проверяем наличие вещи
+        if (!item.getAvailable()) {                 // проверяем доступность вещи available/unavailable
+            throw new ValidationException("Currently unavailable");
+        }
+        // проверяем start и end на past(прошлое)
+        if (bookingDto.getStart().isBefore(LocalDateTime.now()) || bookingDto.getEnd().isBefore(LocalDateTime.now())) {
+            throw new ValidationException("Is it time machine ?");
+        }
+        if (bookingDto.getStart() == null) {
+            throw new ValidationException("bookingDto start must not be null");
+        }
+        if (bookingDto.getEnd() == null) {
+            throw new ValidationException("bookingDto end must not be null");
+        }
 
         Booking booking = bookingMapper.toBooking(bookingDto);  // преобразуем дто в объект
-        booking.setBookerId(userId);  // присвоили создателя бронирования
-        booking.setStatus(Status.WAITING);  // присвоили статус "ожидает подтверждения"
+        booking.setBooker(bookingCreator);                      // присвоили создателя бронирования
+        booking.setItem(item);
+      //  booking.setBookerId(userId);                            // присвоили создателя бронирования
+        booking.setStatus(Status.WAITING);                      // присвоили статус "ожидает подтверждения"
 
         Booking savingBooking = bookingService.save(booking);
         return bookingMapper.toDto(savingBooking);
     }
 
-    @PatchMapping({"/{bookingId}"})
+/*    @PatchMapping({"/{bookingId}"})
     public BookingDto approveOrRejectBooking(@PathVariable long bookingId,
                                              @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId,
                                              @RequestParam String approved) {
@@ -79,40 +97,23 @@ public class BookingController {
                 .orElseThrow(() ->
                         new ItemNotFoundException("Does not contain item with this id or id is invalid"));
 
-        */
-/*if (approved.equals("true")) {
+        if (approved.equals("true")) {
             desiredItem.
-        }*//*
+        }
 
-return null;
+        return null;
 
-    }
+    }*/
 
     private void bookingValidation(BookingDto bookingDto, long userId) {
-        userService.findById(userId);  //проверяем наличие пользователя
-        //itemServiceJpa.findById(bookingDto.getItemId());
-        Long itemId = bookingDto.getItemId();  // проверяем доступность вещи available/unavailable
-        Item item = itemService.findById(itemId);  // проверяем наличие вещи
-        if (!item.getAvailable()) {
-            throw new ValidationException("Currently unavailable");
-        }
-        // проверяем start и end на past(прошлое)
-        if (bookingDto.getStart().isBefore(LocalDateTime.now()) || bookingDto.getEnd().isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Is it time machine ?");
-        }
-        if (bookingDto.getStart() == null) {
-            throw new ValidationException("bookingDto start must not be null");
-        }
-        if (bookingDto.getEnd() == null) {
-            throw new ValidationException("bookingDto end must not be null");
-        }
+
     }
 
-    private void checkOwner(long userId, Item item) {
-        if (item.getOwner() != userId) {
-            throw new UserNotFoundException("Only the owner can change item");
-        }
-    }
+//    private void checkOwner(long userId, Item item) {
+//        if (item.getOwner() != userId) {
+//            throw new UserNotFoundException("Only the owner can change item");
+//        }
+//    }
 
     @GetMapping({"/{bookingId}"})
     public BookingDto findBookingById(@PositiveOrZero @PathVariable int bookingId,
@@ -125,4 +126,3 @@ return null;
         return bookingMapper.toDto(booking);
     }
 }
-*/
