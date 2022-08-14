@@ -1,3 +1,4 @@
+/*
 package ru.practicum.yandex.shareit.booking;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,8 @@ import ru.practicum.yandex.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.yandex.shareit.exceptions.UserNotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
 import ru.practicum.yandex.shareit.item.model.Item;
-import ru.practicum.yandex.shareit.item.service.ItemServiceJpa;
-import ru.practicum.yandex.shareit.user.service.UserServiceJpa;
+import ru.practicum.yandex.shareit.item.ItemService;
+import ru.practicum.yandex.shareit.user.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -21,18 +22,18 @@ import java.time.LocalDateTime;
 public class BookingController {
     private final BookingService bookingService;
     private final BookingMapper bookingMapper;
-    private final UserServiceJpa userServiceJpa;
-    private final ItemServiceJpa itemServiceJpa;
+    private final UserService userService;
+    private final ItemService itemService;
 
     @Autowired
     public BookingController(BookingService bookingService,
                              BookingMapper bookingMapper,
-                             UserServiceJpa userServiceJpa,
-                             ItemServiceJpa itemServiceJpa) {
+                             UserService userService,
+                             ItemService itemService) {
         this.bookingService = bookingService;
         this.bookingMapper = bookingMapper;
-        this.userServiceJpa = userServiceJpa;
-        this.itemServiceJpa = itemServiceJpa;
+        this.userService = userService;
+        this.itemService = itemService;
     }
 
     @PostMapping
@@ -68,28 +69,30 @@ public class BookingController {
         // 1. проверка что это владелец вещи
         // 2.
         // есть юзер айди -> берем юзера - берем список его вещей - берем букинг и берем айди вещи - сравниваем с вещами пользователя
-        userServiceJpa.findById(userId); // проверка владельца
+        userService.findById(userId); // проверка владельца
         var var = bookingService.findById(bookingId);
         long desiredItemId = bookingService.findById(bookingId).getItemId(); // получили айди вещи
-        Item desiredItem = itemServiceJpa.findAllUserItem(userId) // нашли вещь владельца
+        Item desiredItem = itemService.findAllUserItem(userId) // нашли вещь владельца
                 .stream()
                 .filter(item -> desiredItemId == item.getId())
                 .findFirst()
                 .orElseThrow(() ->
                         new ItemNotFoundException("Does not contain item with this id or id is invalid"));
 
-        /*if (approved.equals("true")) {
+        */
+/*if (approved.equals("true")) {
             desiredItem.
-        }*/
+        }*//*
+
 return null;
 
     }
 
     private void bookingValidation(BookingDto bookingDto, long userId) {
-        userServiceJpa.findById(userId);  //проверяем наличие пользователя
+        userService.findById(userId);  //проверяем наличие пользователя
         //itemServiceJpa.findById(bookingDto.getItemId());
         Long itemId = bookingDto.getItemId();  // проверяем доступность вещи available/unavailable
-        Item item = itemServiceJpa.findById(itemId);  // проверяем наличие вещи
+        Item item = itemService.findById(itemId);  // проверяем наличие вещи
         if (!item.getAvailable()) {
             throw new ValidationException("Currently unavailable");
         }
@@ -122,3 +125,4 @@ return null;
         return bookingMapper.toDto(booking);
     }
 }
+*/

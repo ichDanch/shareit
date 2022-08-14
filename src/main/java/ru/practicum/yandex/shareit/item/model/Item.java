@@ -17,7 +17,7 @@ public class Item {
     @PositiveOrZero
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "item_id")
     private long id;
     @NotEmpty
     @NotBlank(message = "Name cannot be null or empty")
@@ -29,11 +29,10 @@ public class Item {
     @NotNull
     @Column(name = "available")
     private Boolean available; // Статус должен проставлять владелец
-    @Column(name = "owner_id")
-    private long owner; // владелец вещи
-   /* @ElementCollection
-    @CollectionTable(name="requests", joinColumns=@JoinColumn(name="item_id"))
-    @Column(name="name")*/
+    //@Column(name = "owner_id")
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner; // владелец вещи
 
     //@OneToOne
     //@JoinColumn(name ="id", referencedColumnName = "id")
@@ -44,11 +43,21 @@ public class Item {
         this.description = description;
         this.available = available;
     }
-public Item(String name, String description, Boolean available, long owner) {
+public Item(String name, String description, Boolean available, User owner) {
         this.name = name;
         this.description = description;
         this.available = available;
         this.owner = owner;
     }
 
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", available=" + available +
+                ", owner=" + owner +
+                '}';
+    }
 }
