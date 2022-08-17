@@ -44,11 +44,11 @@ public class ItemController {
       return itemService.patchItem(itemDto, itemId, userId);
     }
 
-    @GetMapping({"/{id}"})
-    public ItemDto findItemById(@PositiveOrZero @PathVariable int id,
+    @GetMapping({"/{itemId}"})
+    public ItemDto findItemById(@PositiveOrZero @PathVariable int itemId,
                                 @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        Item item = itemService.findById(id);
-        return itemMapper.toDto(item);
+        return itemService.findById(itemId, userId);
+
     }
 
     @GetMapping
@@ -68,12 +68,11 @@ public class ItemController {
 
     }
 
-    @DeleteMapping({"/{id}"})
-    public void deleteItem(@PositiveOrZero @PathVariable int id,
+    @DeleteMapping({"/{itemId}"})
+    public void deleteItem(@PositiveOrZero @PathVariable int itemId,
                            @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        Item item = itemService.findById(id);
-        checkOwner(userId, item);
-        itemService.deleteItemById(id);
+
+        itemService.deleteItemById(itemId, userId);
     }
 
     private void checkOwner(long userId, Item item) {

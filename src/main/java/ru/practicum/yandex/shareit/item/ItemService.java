@@ -50,7 +50,9 @@ public class ItemService {
     }
     @Transactional
     public ItemDto patchItem(ItemDto itemDto, long itemId, long userId) {
-        Item item = findById(itemId);                   // проверяем наличие вещи в базе
+        Item item = itemsRepository.findById(itemId)
+                .orElseThrow(() ->
+                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));                   // проверяем наличие вещи в базе
 
         if (item.getOwner() == null || item.getOwner().getId() != userId) {        // проверяем владельца
             throw new NotFoundException("Only the owner can change item");
@@ -81,16 +83,22 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    public Item findById(long id) {
-        return itemsRepository.findById(id)
+    public ItemDto findById(long itemId, long userId) {
+        Item item = itemsRepository.findById(itemId)
                 .orElseThrow(() ->
-                        new NotFoundException("Does not contain item with this id or id is invalid " + id));
+                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
+        ItemDto itemDto = itemMapper.toDto(item);
+
+        return itemDto;
     }
 
     @Transactional
-    public void deleteItemById(long id) {
-        findById(id);
-        itemsRepository.deleteById(id);
+    public void deleteItemById(long itemId, long userId) {
+        Item item = itemsRepository.findById(itemId)
+                .orElseThrow(() ->
+                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
+        checkOwner(userId, item);
+        itemsRepository.deleteById(itemId);
     }
 
     public List<Item> findAllItems() {

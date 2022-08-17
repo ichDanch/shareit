@@ -10,6 +10,7 @@ import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.exceptions.StateException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
 import ru.practicum.yandex.shareit.item.ItemService;
+import ru.practicum.yandex.shareit.item.ItemsRepository;
 import ru.practicum.yandex.shareit.item.model.Item;
 import ru.practicum.yandex.shareit.user.UserService;
 import ru.practicum.yandex.shareit.user.model.User;
@@ -25,16 +26,19 @@ public class BookingService {
     private final BookingMapper bookingMapper;
     private final UserService userService;
     private final ItemService itemService;
+    private final ItemsRepository itemsRepository;
 
     @Autowired
     public BookingService(BookingRepository bookingRepository,
                           BookingMapper bookingMapper,
                           UserService userService,
-                          ItemService itemService) {
+                          ItemService itemService,
+                          ItemsRepository itemsRepository) {
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
         this.userService = userService;
         this.itemService = itemService;
+        this.itemsRepository = itemsRepository;
     }
 
     @Transactional
@@ -47,7 +51,9 @@ public class BookingService {
         User bookingCreator = userService.findById(userId);           //проверяем наличие пользователя
 
         long itemId = bookingDto.getItemId();
-        Item item = itemService.findById(itemId);                     // проверяем наличие вещи
+        Item item = itemsRepository.findById(itemId)
+                .orElseThrow(() ->
+                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));                     // проверяем наличие вещи
 
         if (item.getOwner().getId() == userId) {
             throw new NotFoundException("Сan not be booked twice");
