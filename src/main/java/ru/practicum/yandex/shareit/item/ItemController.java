@@ -2,7 +2,7 @@ package ru.practicum.yandex.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.yandex.shareit.exceptions.UserNotFoundException;
+import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
 import ru.practicum.yandex.shareit.item.model.Item;
 import ru.practicum.yandex.shareit.user.UserService;
@@ -78,7 +78,7 @@ public class ItemController {
 
     private void checkOwner(long userId, Item item) {
         if (item.getOwner().getId() != userId) {
-            throw new UserNotFoundException("Only the owner can change item");
+            throw new NotFoundException("Only the owner can change item");
         }
     }
 }
