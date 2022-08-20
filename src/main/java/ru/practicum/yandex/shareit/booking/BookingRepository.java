@@ -9,13 +9,22 @@ import ru.practicum.yandex.shareit.booking.dto.BookingDtoToUser;
 import ru.practicum.yandex.shareit.booking.model.Booking;
 import ru.practicum.yandex.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findBookingsByBookerOrderByStartDesc(User bookerId);
     List<Booking> findBookingsByItem_OwnerOrderByStartDesc(User owner);
+
+    List<Booking> findBookingsByItemId(long itemId);
+
+//    @Query("select b from Booking b where b.booker.id = 1 and b.end < ")
+//    Booking findBookingByBooker (long bookerId, LocalDateTime now);
+
+    Optional<Booking> findBookingByBookerIdAndEndIsBefore(long bookerId, LocalDateTime now);
 
 
   //  List<Booking> findBookingsByBookerOrderByStartDesc(User bookerId);

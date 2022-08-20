@@ -53,7 +53,7 @@ public class BookingMapper {
          return new BookingDtoToItem(
                  booking.getId(),
                  booking.getItem().getId(),
-                 booking.getItem().getId()
+                 booking.getBooker().getId()
          );
      }
 

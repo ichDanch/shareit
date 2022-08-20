@@ -3,7 +3,9 @@ package ru.practicum.yandex.shareit.item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.yandex.shareit.exceptions.NotFoundException;
+import ru.practicum.yandex.shareit.item.dto.CommentDto;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
+import ru.practicum.yandex.shareit.item.model.Comment;
 import ru.practicum.yandex.shareit.item.model.Item;
 import ru.practicum.yandex.shareit.user.UserService;
 
@@ -41,7 +43,7 @@ public class ItemController {
     public ItemDto patchItem(@Valid @RequestBody ItemDto itemDto,
                              @PathVariable long itemId,
                              @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-      return itemService.patchItem(itemDto, itemId, userId);
+        return itemService.patchItem(itemDto, itemId, userId);
     }
 
     @GetMapping({"/{itemId}"})
@@ -52,11 +54,13 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> findAllOwnersItems(@PositiveOrZero @RequestHeader("X-Sharer-User-Id") long ownerId) {
-        return itemService.findAllOwnersItems(ownerId)
-                .stream()
-                .map(itemMapper::toDto)
-                .collect(Collectors.toList());
+    public List<ItemDto> findAllItemsByOwnerId(@PositiveOrZero @RequestHeader("X-Sharer-User-Id") long ownerId) {
+        // перенести в сервис и повторить что и для findItemById
+        return itemService.findAllItemsByOwnerId(ownerId);
+//        return itemService.findAllItemsByOwnerId(ownerId)
+//                .stream()
+//                .map(itemMapper::toDto)
+//                .collect(Collectors.toList());
     }
 
     @GetMapping({"/search"})
@@ -74,6 +78,15 @@ public class ItemController {
 
         itemService.deleteItemById(itemId, userId);
     }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@Valid @NotNull @RequestBody CommentDto commentDto,
+                                    @PathVariable long itemId,
+                                    @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.createCommentByUser(commentDto, itemId, userId);
+
+    }
+
 
     private void checkOwner(long userId, Item item) {
         if (item.getOwner().getId() != userId) {

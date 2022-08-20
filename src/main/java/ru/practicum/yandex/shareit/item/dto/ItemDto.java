@@ -8,6 +8,7 @@ import ru.practicum.yandex.shareit.booking.dto.BookingDtoToItem;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @AllArgsConstructor()
@@ -22,6 +23,7 @@ public class ItemDto {
     private Boolean available; // Статус должен проставлять владелец
     private BookingDtoToItem nextBooking;
     private BookingDtoToItem lastBooking;
+    private List<CommentDto> comments;
     //private long owner; // владелец вещи
    // private ItemRequest request; // если вещь была создана по запросу другого пользователя, то в этом поле будет храниться ссылка на соответствующий запрос.
 

@@ -174,7 +174,8 @@ public class BookingService {
     List<BookingDtoToUser> findBookingsByCurrentOwner(long userId,
                                                       State state) {
         User currentOwner = userService.findById(userId);
-        List<Item> items = itemService.findAllOwnersItems(userId);
+        List<Item> items = itemsRepository.findItemsByOwnerId(userId);
+       // List<Item> items = itemService.findAllItemsByOwnerId(userId);
         List<Booking> bookings = bookingRepository.findBookingsByItem_OwnerOrderByStartDesc(currentOwner);
         if (bookings.isEmpty()) {
             throw new ValidationException("Need at least one thing");
