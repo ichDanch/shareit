@@ -2,12 +2,8 @@ package ru.practicum.yandex.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.item.dto.CommentDto;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
-import ru.practicum.yandex.shareit.item.model.Comment;
-import ru.practicum.yandex.shareit.item.model.Item;
-import ru.practicum.yandex.shareit.user.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,20 +15,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
-    private final UserService userService;
     private final ItemMapper itemMapper;
 
     @Autowired
     public ItemController(ItemService itemService,
-                          UserService userService,
                           ItemMapper itemMapper) {
         this.itemService = itemService;
-        this.userService = userService;
         this.itemMapper = itemMapper;
     }
 
     @PostMapping
-    public ItemDto createItem(@Valid @NotNull @RequestBody ItemDto itemDto,  // Приходит имя, описание, статус
+    public ItemDto createItem(@Valid @NotNull @RequestBody ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") long userId) {
 
         return itemService.saveItem(itemDto, userId);
@@ -55,12 +48,7 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> findAllItemsByOwnerId(@PositiveOrZero @RequestHeader("X-Sharer-User-Id") long ownerId) {
-        // перенести в сервис и повторить что и для findItemById
         return itemService.findAllItemsByOwnerId(ownerId);
-//        return itemService.findAllItemsByOwnerId(ownerId)
-//                .stream()
-//                .map(itemMapper::toDto)
-//                .collect(Collectors.toList());
     }
 
     @GetMapping({"/search"})
@@ -85,12 +73,5 @@ public class ItemController {
                                     @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.createCommentByUser(commentDto, itemId, userId);
 
-    }
-
-
-    private void checkOwner(long userId, Item item) {
-        if (item.getOwner().getId() != userId) {
-            throw new NotFoundException("Only the owner can change item");
-        }
     }
 }

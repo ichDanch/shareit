@@ -43,22 +43,17 @@ public class BookingService {
 
     @Transactional
     public BookingDto saveBooking(BookingDto bookingDto, long userId) {
-        // 1. Запрос может быть создан любым пользователем
-        // 2. Проверить вещь на доступность available/unavailable
-        // 3. а затем подтверждён владельцем вещи
-        // 4. После создания запрос находится в статусе WAITING
-
-        User bookingCreator = userService.findById(userId);           //проверяем наличие пользователя
+        User bookingCreator = userService.findById(userId);
 
         long itemId = bookingDto.getItemId();
         Item item = itemsRepository.findById(itemId)
                 .orElseThrow(() ->
-                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));                     // проверяем наличие вещи
+                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
 
         if (item.getOwner().getId() == userId) {
             throw new NotFoundException("Сan not be booked twice");
         }
-        if (!item.getAvailable()) {                                    // проверяем доступность вещи available/unavailable
+        if (!item.getAvailable()) {
             throw new ValidationException("Currently unavailable");
         }
         if (bookingDto.getStart().isBefore(LocalDateTime.now()) || bookingDto.getEnd().isBefore(LocalDateTime.now())) {
@@ -71,10 +66,10 @@ public class BookingService {
             throw new ValidationException("bookingDto end must not be null");
         }
 
-        Booking booking = bookingMapper.toBooking(bookingDto);  // преобразуем дто в объект
-        booking.setBooker(bookingCreator);                      // присвоили создателя бронирования
-        booking.setItem(item);                                  // присвоили вещь
-        booking.setStatus(Status.WAITING);                      // присвоили статус "ожидает подтверждения"
+        Booking booking = bookingMapper.toBooking(bookingDto);
+        booking.setBooker(bookingCreator);
+        booking.setItem(item);
+        booking.setStatus(Status.WAITING);
 
         Booking savingBooking = bookingRepository.save(booking);
         return bookingMapper.toDto(savingBooking);
@@ -82,7 +77,7 @@ public class BookingService {
 
     @Transactional
     public BookingDtoToUser approveOrRejectBookingByOwner(long bookingId, long userId, boolean approved) {
-        User user = userService.findById(userId);
+        userService.findById(userId);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Does not contain booking with this id or id is invalid "));
         Item item = booking.getItem();
@@ -96,13 +91,10 @@ public class BookingService {
         }
         if (approved) {
             booking.setStatus(Status.APPROVED);
-
-            //bookingRepository.updateStatusByOwner(bookingId,Status.APPROVED);
         } else {
             booking.setStatus(Status.REJECTED);
-            // bookingRepository.updateStatusByOwner(bookingId,Status.REJECTED);
         }
-        return bookingMapper.toBookingDtoToUser(booking);  // может быть bookingRepository.save(booking) ?
+        return bookingMapper.toBookingDtoToUser(booking);
     }
 
 
@@ -161,21 +153,16 @@ public class BookingService {
                         .filter(b -> b.getStatus().equals(Status.REJECTED))
                         .map(bookingMapper::toBookingDtoToUser)
                         .collect(Collectors.toList());
-//           case UNSUPPORTED_STATUS:
-//                throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
             default:
-                throw new StateException("Unknown state: UNSUPPORTED_STATUS");
+                throw new RuntimeException ("Unknown state: UNSUPPORTED_STATUS");
         }
-
-
-        //.sorted(Comparator.comparing(BookingDtoToUser::getStart).reversed())
     }
 
     List<BookingDtoToUser> findBookingsByCurrentOwner(long userId,
                                                       State state) {
         User currentOwner = userService.findById(userId);
         List<Item> items = itemsRepository.findItemsByOwnerId(userId);
-       // List<Item> items = itemService.findAllItemsByOwnerId(userId);
+
         List<Booking> bookings = bookingRepository.findBookingsByItem_OwnerOrderByStartDesc(currentOwner);
         if (bookings.isEmpty()) {
             throw new ValidationException("Need at least one thing");
@@ -211,10 +198,8 @@ public class BookingService {
                         .filter(b -> b.getStatus().equals(Status.REJECTED))
                         .map(bookingMapper::toBookingDtoToUser)
                         .collect(Collectors.toList());
-//            case UNSUPPORTED_STATUS:
-//                throw new ValidationException("Unknown state");
             default:
-                throw new StateException("Unknown state: UNSUPPORTED_STATUS");
+                throw new RuntimeException ("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 }

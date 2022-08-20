@@ -7,9 +7,6 @@ import ru.practicum.yandex.shareit.booking.dto.BookingDtoToUser;
 import ru.practicum.yandex.shareit.booking.dto.BookingDtoWithStatus;
 import ru.practicum.yandex.shareit.booking.model.Booking;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
 @Component
 public class BookingMapper {
 
@@ -23,7 +20,6 @@ public class BookingMapper {
     }
 
     public BookingDtoWithStatus toDtoWithStatus(Booking booking) {
-
         return new BookingDtoWithStatus(
                 booking.getId(),
                 booking.getStatus(),
@@ -49,13 +45,14 @@ public class BookingMapper {
                 .status(booking.getStatus())
                 .build();
     }
-     public BookingDtoToItem toBookingDtoToItem(Booking booking) {
-         return new BookingDtoToItem(
-                 booking.getId(),
-                 booking.getItem().getId(),
-                 booking.getBooker().getId()
-         );
-     }
+
+    public BookingDtoToItem toBookingDtoToItem(Booking booking) {
+        return new BookingDtoToItem(
+                booking.getId(),
+                booking.getItem().getId(),
+                booking.getBooker().getId()
+        );
+    }
 
 
 }

@@ -1,17 +1,19 @@
 package ru.practicum.yandex.shareit.user.model;
 
-import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
-import ru.practicum.yandex.shareit.item.model.Item;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.util.List;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PositiveOrZero;
 
 @Data
 @Entity
 @NoArgsConstructor
-@Table (name = "users")
+@Table(name = "users")
 @AllArgsConstructor
 public class User {
     @PositiveOrZero
@@ -21,14 +23,11 @@ public class User {
     private long id;
     @NotEmpty
     @NotBlank(message = "Name cannot be null or empty")
-    @Column (name = "name")
+    @Column(name = "name")
     private String name;
     @Email(message = "Email should be valid")
-    @Column (name = "email")
+    @Column(name = "email")
     private String email;
-  /*  @OneToMany(mappedBy = "owner")
-    private List<Item> items;*/
-
 
     @Override
     public String toString() {
@@ -36,7 +35,6 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-               // ", items=" + items +
                 '}';
     }
 }

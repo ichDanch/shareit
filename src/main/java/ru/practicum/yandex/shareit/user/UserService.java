@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
+import ru.practicum.yandex.shareit.user.UserMapper;
+import ru.practicum.yandex.shareit.user.UsersRepository;
 import ru.practicum.yandex.shareit.user.dto.UserDto;
 import ru.practicum.yandex.shareit.user.model.User;
 
@@ -33,7 +35,7 @@ public class UserService {
 
     @Transactional
     public UserDto updateUser(UserDto userDto, long id) {
-        User user = findById(id);  // тут уже есть проверка на налчиие в базе
+        User user = findById(id);
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }

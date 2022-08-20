@@ -11,33 +11,30 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
-@Table (name = "bookings")
+@Table(name = "bookings")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "booking_id")
+    @Column(name = "booking_id")
     private long id;
     @Column(name = "start_date")
-    //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime start;
     @Column(name = "end_date")
-   // @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime end;
-    //@Column (name ="item_id")
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
     @ManyToOne
-    @JoinColumn (name = "booker_id")
+    @JoinColumn(name = "booker_id")
     private User booker;
-    @Column (name = "status")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public Booking( LocalDateTime start, LocalDateTime end) {
+    public Booking(LocalDateTime start, LocalDateTime end) {
         this.start = start;
         this.end = end;
     }

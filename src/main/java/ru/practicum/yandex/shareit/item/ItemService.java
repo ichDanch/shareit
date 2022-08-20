@@ -57,8 +57,6 @@ public class ItemService {
 
     @Transactional
     public ItemDto saveItem(ItemDto itemDto, long userId) {
-        // 1. перенести логику в сервис
-        // 2. проверку вынести в отделньый метод
         if (itemDto.getAvailable() == null) {
             throw new ValidationException("itemDto available must not be null");
         }
@@ -69,11 +67,11 @@ public class ItemService {
             throw new ValidationException("itemDto description must not be null");
         }
 
-        User owner = userService.findById(userId);  //проверяем наличие пользователя и получаем владельца
-        Item toItem = itemMapper.toItem(itemDto);   //преобразуем дто в объект
-        toItem.setOwner(owner);                     //присваиваем вещи владельца
-        Item item = itemsRepository.save(toItem);   //сохраняем объект в базу и возвращаем вещь с присвоенным айди
-        return itemMapper.toDto(item);              //возвращаем дто
+        User owner = userService.findById(userId);
+        Item toItem = itemMapper.toItem(itemDto);
+        toItem.setOwner(owner);
+        Item item = itemsRepository.save(toItem);
+        return itemMapper.toDto(item);
     }
 
     @Transactional
@@ -85,7 +83,6 @@ public class ItemService {
         if (item.getOwner() == null || item.getOwner().getId() != userId) {
             throw new NotFoundException("Only the owner can change item");
         }
-
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }
@@ -106,22 +103,31 @@ public class ItemService {
         List<Item> items = itemsRepository.findItemsByOwnerId(ownerId);
 
         return items.stream()
-                .map(this::setLastAndNextBooking)
+                .map(this::setLastAndNextBookingToItem)
                 .map(this::setComments)
                 .sorted(Comparator.comparing(ItemDto::getId))
                 .collect(Collectors.toList());
     }
 
+    public ItemDto findById(long itemId, long userId) {
+        Item item = itemsRepository.findById(itemId)
+                .orElseThrow(() ->
+                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
 
-    public ItemDto setLastAndNextBooking(Item item) {
-
-        List<Booking> bookings = bookingRepository.findBookingsByItemId(item.getId());
         ItemDto itemDto = itemMapper.toDto(item);
+
+        if (item.getOwner().getId() == userId) {
+           itemDto = setLastAndNextBookingToItem(item);
+        }
+
+        return setComments(itemDto);
+    }
+    public ItemDto setLastAndNextBookingToItem(Item item) {
+        ItemDto itemDto = itemMapper.toDto(item);
+        List<Booking> bookings = bookingRepository.findBookingsByItemId(item.getId());
+
         BookingDtoToItem lastBooking = bookings.stream()
                 .sorted(Comparator.comparing(Booking::getEnd).reversed())
-//                .filter(b ->
-//                        (b.getStart().isBefore(LocalDateTime.now()) && b.getEnd().isAfter(LocalDateTime.now()))
-//                                || (b.getEnd().isBefore(LocalDateTime.now())))
                 .filter(b -> LocalDateTime.now().isAfter(b.getEnd()))
                 .map(bookingMapper::toBookingDtoToItem)
                 .findFirst()
@@ -129,48 +135,14 @@ public class ItemService {
 
         BookingDtoToItem nextBooking = bookings.stream()
                 .sorted(Comparator.comparing(Booking::getStart).reversed())
-                //.filter(b -> b.getStart().isAfter(LocalDateTime.now()))
                 .filter(b -> LocalDateTime.now().isBefore(b.getStart()))
                 .map(bookingMapper::toBookingDtoToItem)
                 .findFirst()
                 .orElse(null);
+
         itemDto.setLastBooking(lastBooking);
         itemDto.setNextBooking(nextBooking);
         return itemDto;
-    }
-
-
-    public ItemDto findById(long itemId, long userId) {
-        Item item = itemsRepository.findById(itemId)
-                .orElseThrow(() ->
-                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
-        //   if (item.getOwner().getId() != userId) {
-        //     throw new NotFoundException("user is not owner");
-        //  }
-        ItemDto itemDto = itemMapper.toDto(item);
-        if (item.getOwner().getId() == userId) {
-            List<Booking> bookings = bookingRepository.findBookingsByItemId(itemId);
-            BookingDtoToItem lastBooking = bookings.stream()
-                    .sorted(Comparator.comparing(Booking::getEnd).reversed())
-//                .filter(b ->
-//                        (b.getStart().isBefore(LocalDateTime.now()) && b.getEnd().isAfter(LocalDateTime.now()))
-//                                || (b.getEnd().isBefore(LocalDateTime.now())))
-                    .filter(b -> LocalDateTime.now().isAfter(b.getEnd()))
-                    .map(bookingMapper::toBookingDtoToItem)
-                    .findFirst()
-                    .orElse(null);
-
-            BookingDtoToItem nextBooking = bookings.stream()
-                    .sorted(Comparator.comparing(Booking::getStart).reversed())
-                    //.filter(b -> b.getStart().isAfter(LocalDateTime.now()))
-                    .filter(b -> LocalDateTime.now().isBefore(b.getStart()))
-                    .map(bookingMapper::toBookingDtoToItem)
-                    .findFirst()
-                    .orElse(null);
-            itemDto.setLastBooking(lastBooking);
-            itemDto.setNextBooking(nextBooking);
-        }
-        return setComments(itemDto);
     }
 
     @Transactional
@@ -183,18 +155,13 @@ public class ItemService {
     }
 
     public List<Item> findAllItems() {
-
         return itemsRepository.findAll();
     }
 
     public List<Item> itemsByNameAndDescription(String text) {
-
-        //1. возвращает только доступные для аренды вещи
-        //2. искать текст в названии и описании
         if (text.isBlank()) {
             return new ArrayList<Item>();
         }
-        // написать SQL запрос вместо этого
         return findAllItems()
                 .stream()
                 .filter(u -> u.getAvailable() == true)
@@ -206,15 +173,10 @@ public class ItemService {
 
     @Transactional
     public CommentDto createCommentByUser(CommentDto commentDto, long itemId, long userId) {
-        //Отзыв может оставить только тот пользователь,
-        //который брал эту вещь в аренду BOOKER, и только после окончания срока аренды now.isAfterEnd конец до сейчас
-        // проверяем наличие пользователя
         User user = usersRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Does not contain user with this id or id is invalid " + userId));
-        // проверяем наличие вещи
         Item item = itemsRepository.findById(itemId).orElseThrow(() ->
                 new NotFoundException("Does not contain item with this id or id is invalid " + userId));
-        // проверяем наличие бронирования
         Booking booking = bookingRepository.findBookingByBookerIdAndEndIsBefore(userId, LocalDateTime.now())
                 .orElseThrow(() ->
                         new ValidationException("Does not contain booking with this booker or id is invalid " + userId));

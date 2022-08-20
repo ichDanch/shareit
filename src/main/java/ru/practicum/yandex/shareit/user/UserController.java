@@ -26,7 +26,7 @@ public class UserController {
 
     @PostMapping
     public UserDto createUser(@Valid @NotNull @RequestBody User user) {
-       return userService.saveUser(user);
+        return userService.saveUser(user);
     }
 
     @GetMapping("/{id}")
@@ -38,7 +38,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public UserDto patch(@Valid @NotNull @RequestBody UserDto userDto,
                          @PathVariable long id) {
-        return userService.updateUser(userDto,id);
+        return userService.updateUser(userDto, id);
     }
 
     @GetMapping
@@ -53,30 +53,4 @@ public class UserController {
     public void delete(@Positive @PathVariable long id) {
         userService.deleteUserById(id);
     }
-
-//    private void EmailDuplicateAndNullValidation(User user) {
-//        if (user.getEmail() == null) {
-//            throw new ValidationException("User email must not be null");
-//        }
-//        var emailDuplicateValidation = userServiceJpa.findAll()
-//                .stream()
-//                .filter(u -> u.getEmail().equals(user.getEmail()))
-//                .findFirst();
-//        emailDuplicateValidation.ifPresent(u -> {
-//            throw new EmailDuplicateException("This email is already exists");
-//        });
-//    }
-
-//    private void EmailDuplicateAndNullValidationDto(UserDto userDto) {
-//
-//        var emailDuplicateValidation = userServiceJpa.findAll()
-//                .stream()
-//                .filter(u -> u.getEmail().equals(userDto.getEmail()))
-//                .findFirst();
-//        emailDuplicateValidation.ifPresent(u -> {
-//            throw new EmailDuplicateException("This email is already exists");
-//        });
-//    }
-
-
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.yandex.shareit.exceptions.model.ErrorResponse;
 
 @RestControllerAdvice
@@ -17,10 +18,12 @@ public class ExceptionsController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
     }
+
     @ExceptionHandler
     public ResponseEntity<?> handleNotFound(final NotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler
     public ResponseEntity<?> handleDuplicateEmailConflict(final EmailDuplicateException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
@@ -38,16 +41,9 @@ public class ExceptionsController {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationStateException(final StateException e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
+    public ErrorResponse handleValidationStateException(final MethodArgumentTypeMismatchException e) {
+        return new ErrorResponse(String.format("Unknown %s: %s", e.getName(), e.getValue()));
     }
 
-
-//    @ExceptionHandler
-//    public ResponseEntity<?> handleThrowable(final Throwable e) {
-//        return new ResponseEntity<>("Unexpected error occurred", HttpStatus.BAD_REQUEST);
-//    }
 }
 
