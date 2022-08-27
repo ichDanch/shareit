@@ -1,3 +1,4 @@
+/*
 package ru.practicum.yandex.shareit.item.dao;
 
 import ru.practicum.yandex.shareit.item.model.Item;
@@ -13,3 +14,4 @@ public interface ItemStorage {
     Optional<Item> getItem(long id);
     void delete(long id);
 }
+*/

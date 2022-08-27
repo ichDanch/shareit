@@ -1,3 +1,4 @@
+/*
 package ru.practicum.yandex.shareit.item.dao;
 
 import org.springframework.stereotype.Component;
@@ -42,3 +43,4 @@ public class InMemoryItemStorage implements ItemStorage {
         items.remove(id);
     }
 }
+*/

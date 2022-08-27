@@ -3,11 +3,14 @@ package ru.practicum.yandex.shareit.request;
 import lombok.Data;
 import ru.practicum.yandex.shareit.user.model.User;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 
 @Data
+
 public class ItemRequest {
     @Positive
     private long id;
