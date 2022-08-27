@@ -13,6 +13,8 @@ import ru.practicum.yandex.shareit.item.dto.CommentDto;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
 import ru.practicum.yandex.shareit.item.model.Comment;
 import ru.practicum.yandex.shareit.item.model.Item;
+import ru.practicum.yandex.shareit.request.model.ItemRequest;
+import ru.practicum.yandex.shareit.request.repository.ItemRequestsRepository;
 import ru.practicum.yandex.shareit.user.UserService;
 import ru.practicum.yandex.shareit.user.UsersRepository;
 import ru.practicum.yandex.shareit.user.model.User;
@@ -34,6 +36,7 @@ public class ItemService {
     private final UsersRepository usersRepository;
     private final CommentsRepository commentsRepository;
     private final CommentMapper commentMapper;
+    private final ItemRequestsRepository itemRequestsRepository;
 
 
     @Autowired
@@ -44,7 +47,7 @@ public class ItemService {
                        BookingMapper bookingMapper,
                        UsersRepository usersRepository,
                        CommentsRepository commentsRepository,
-                       CommentMapper commentMapper) {
+                       CommentMapper commentMapper, ItemRequestsRepository itemRequestsRepository) {
         this.itemsRepository = itemsRepository;
         this.userService = userService;
         this.bookingRepository = bookingRepository;
@@ -53,6 +56,7 @@ public class ItemService {
         this.usersRepository = usersRepository;
         this.commentsRepository = commentsRepository;
         this.commentMapper = commentMapper;
+        this.itemRequestsRepository = itemRequestsRepository;
     }
 
     @Transactional
@@ -70,6 +74,14 @@ public class ItemService {
         User owner = userService.findById(userId);
         Item toItem = itemMapper.toItem(itemDto);
         toItem.setOwner(owner);
+
+        if (itemDto.getRequestId() != 0) {
+            ItemRequest itemRequest = itemRequestsRepository.findById(itemDto.getRequestId()).orElseThrow(() ->
+                    new NotFoundException(
+                            "Does not contain itemRequest with this id or id is invalid " + itemDto.getRequestId())
+            );
+            toItem.setItemRequest(itemRequest);
+        }
         Item item = itemsRepository.save(toItem);
         return itemMapper.toDto(item);
     }
@@ -117,11 +129,12 @@ public class ItemService {
         ItemDto itemDto = itemMapper.toDto(item);
 
         if (item.getOwner().getId() == userId) {
-           itemDto = setLastAndNextBookingToItem(item);
+            itemDto = setLastAndNextBookingToItem(item);
         }
 
         return setComments(itemDto);
     }
+
     public ItemDto setLastAndNextBookingToItem(Item item) {
         ItemDto itemDto = itemMapper.toDto(item);
         List<Booking> bookings = bookingRepository.findBookingsByItemId(item.getId());

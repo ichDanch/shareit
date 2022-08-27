@@ -3,6 +3,7 @@ package ru.practicum.yandex.shareit.item.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.yandex.shareit.request.model.ItemRequest;
 import ru.practicum.yandex.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -14,10 +15,9 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @Table (name = "items")
 public class Item {
-    @PositiveOrZero
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "id")
     private long id;
     @NotEmpty
     @NotBlank(message = "Name cannot be null or empty")
@@ -28,11 +28,13 @@ public class Item {
     private String description;
     @NotNull
     @Column(name = "available")
-    private Boolean available; // Статус должен проставлять владелец
-    //@Column(name = "owner_id")
+    private Boolean available;
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private User owner; // владелец вещи
+    private User owner;
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest itemRequest;
 
     //@OneToOne
     //@JoinColumn(name ="id", referencedColumnName = "id")
@@ -60,4 +62,5 @@ public Item(String name, String description, Boolean available, User owner) {
                 ", owner=" + owner +
                 '}';
     }
+
 }

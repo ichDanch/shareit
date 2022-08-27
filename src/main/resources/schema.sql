@@ -1,8 +1,8 @@
-DROP TABLE IF EXISTS COMMENTS, BOOKINGS, USERS, ITEMS;
+DROP TABLE IF EXISTS COMMENTS, BOOKINGS, REQUESTS ,USERS, ITEMS;
 
 CREATE TABLE IF NOT EXISTS USERS
 (
-    user_id serial
+    id serial
         constraint users_pk
             primary key,
     name    varchar(50)        not null,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS USERS
 
 CREATE TABLE IF NOT EXISTS ITEMS
 (
-    item_id     serial
+    id     serial
         constraint items_pk
             primary key,
     name        varchar(50) not null,
@@ -22,10 +22,9 @@ CREATE TABLE IF NOT EXISTS ITEMS
             references users,
     request_id  bigint
 );
-
-create table if not exists bookings
+CREATE TABLE IF NOT EXISTS BOOKINGS
 (
-    booking_id bigserial
+    id bigserial
         constraint bookings_pk
             primary key,
     start_date timestamp not null,
@@ -39,9 +38,9 @@ create table if not exists bookings
     status     varchar(50)
 );
 
-create table if not exists comments
+CREATE TABLE IF NOT EXISTS COMMENTS
 (
-    comment_id bigserial
+    id bigserial
         constraint comments_pk
             primary key,
     text       varchar(500),
@@ -52,4 +51,15 @@ create table if not exists comments
         constraint comments_users_user_id_fk
             references users,
     created    timestamp
+);
+CREATE TABLE IF NOT EXISTS REQUESTS
+(
+    id           bigserial
+        constraint requests_pk
+            primary key,
+    description  varchar(200),
+    requestor_id bigint not null
+        constraint requests_users_user_id_fk
+            references users,
+    created      timestamp without time zone
 );
