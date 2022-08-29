@@ -1,6 +1,10 @@
 package ru.practicum.yandex.shareit.request.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
@@ -54,41 +58,13 @@ public class ItemRequestService {
     public List<ItemRequestDto> findRequestsByOwner(long userId) {
         User user = checkUser(userId);
         List<ItemRequest> requests = itemRequestsRepository.findItemRequestsByRequestorIdOrderByCreatedDesc(userId);
-        List<Long> itemRequestsId = requests.stream()
-                .map(ItemRequest::getId)
-                .collect(Collectors.toList());
-
-        List<Item> items = itemRequestsId.stream()
-                .map(itemsRepository::findItemByItemRequestId)
-                .flatMap(Optional::stream)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        List<ItemRequestDto> itemRequestsDto = new ArrayList<>();
+        List<Item> items = findItemsByRequests(requests);
 
         if (!requests.isEmpty() && !items.isEmpty()) {
-            return setItemDtoToRequestDto(requests, items, itemRequestsDto);
+            return setItemDtoToRequestDto(requests, items);
         } else {
             return itemRequestMapper.toDtos(requests);
         }
-    }
-
-    private List<ItemRequestDto> setItemDtoToRequestDto(List<ItemRequest> requests,
-                                                        List<Item> items,
-                                                        List<ItemRequestDto> itemRequestsDto) {
-        for (ItemRequest itemRequest : requests) {
-            for (Item item : items) {
-                if (item.getItemRequest() != null) {
-                    if (itemRequest.getId() == item.getItemRequest().getId()) {
-                        ItemDto itemDto = itemMapper.toDto(item);
-                        ItemRequestDto itemRequestDto = itemRequestMapper.toDto(itemRequest);
-                        itemRequestDto.getItems().add(itemDto);
-                        itemRequestsDto.add(itemRequestDto);
-                    }
-                }
-            }
-        }
-        return itemRequestsDto;
     }
 
     public ItemRequestDto findRequestById(long userId, long requestId) {
@@ -104,9 +80,54 @@ public class ItemRequestService {
         return itemRequestDto;
     }
 
-
     private User checkUser(long userId) {
         return usersRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("Does not contain user with this id or id is invalid " + userId));
+    }
+
+    public List<ItemRequestDto> findAllRequests(int from, int size, long userId) {
+        if (from < 0 || size<=0) {
+            throw new ValidationException("from or size are not valid");
+        }
+        User user = checkUser(userId);
+
+        Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("created").descending());
+
+        Page<ItemRequest> page = itemRequestsRepository.findAllByRequestorIsNot(user, pageWithElements);
+
+        List<ItemRequest> itemRequests = page.get().collect(Collectors.toList());
+
+        List<Item> items = findItemsByRequests(itemRequests);
+
+        return setItemDtoToRequestDto(itemRequests, items);
+    }
+
+
+    private List<ItemRequestDto> setItemDtoToRequestDto(List<ItemRequest> requests, List<Item> items) {
+
+        List<ItemRequestDto> itemRequestsDto = new ArrayList<>();
+
+        for (ItemRequest itemRequest : requests) {
+            for (Item item : items) {
+                if (item.getItemRequest() != null) {
+                    if (itemRequest.getId() == item.getItemRequest().getId()) {
+                        ItemDto itemDto = itemMapper.toDto(item);
+                        ItemRequestDto itemRequestDto = itemRequestMapper.toDto(itemRequest);
+                        itemRequestDto.getItems().add(itemDto);
+                        itemRequestsDto.add(itemRequestDto);
+                    }
+                }
+            }
+        }
+        return itemRequestsDto;
+    }
+
+    private List<Item> findItemsByRequests(List<ItemRequest> itemRequests) {
+        return itemRequests.stream()
+                .map(ItemRequest::getId)
+                .map(itemsRepository::findItemByItemRequestId)
+                .flatMap(Optional::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }
