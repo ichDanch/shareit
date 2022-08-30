@@ -1,6 +1,10 @@
 package ru.practicum.yandex.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.yandex.shareit.booking.BookingMapper;
@@ -88,9 +92,7 @@ public class ItemService {
 
     @Transactional
     public ItemDto patchItem(ItemDto itemDto, long itemId, long userId) {
-        Item item = itemsRepository.findById(itemId)
-                .orElseThrow(() ->
-                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
+        Item item = checkItem(itemId);
 
         if (item.getOwner() == null || item.getOwner().getId() != userId) {
             throw new NotFoundException("Only the owner can change item");
@@ -110,21 +112,23 @@ public class ItemService {
         return itemMapper.toDto(patchedItem);
     }
 
-    public List<ItemDto> findAllItemsByOwnerId(Long ownerId) {
-        userService.findById(ownerId);
-        List<Item> items = itemsRepository.findItemsByOwnerId(ownerId);
+    public List<ItemDto> findAllItemsByOwnerId(int from, int size, Long ownerId) {
+        if (from < 0 || size<=0) {
+            throw new ValidationException("from or size are not valid");
+        }
+        User user = checkUser(ownerId);
+        Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("id"));
+        Page<Item> page = itemsRepository.findItemsByOwner(user,pageWithElements);
+        List<Item> items= page.get().collect(Collectors.toList());
 
         return items.stream()
                 .map(this::setLastAndNextBookingToItem)
                 .map(this::setComments)
-                .sorted(Comparator.comparing(ItemDto::getId))
                 .collect(Collectors.toList());
     }
 
     public ItemDto findById(long itemId, long userId) {
-        Item item = itemsRepository.findById(itemId)
-                .orElseThrow(() ->
-                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
+        Item item = checkItem(itemId);
 
         ItemDto itemDto = itemMapper.toDto(item);
 
@@ -160,9 +164,7 @@ public class ItemService {
 
     @Transactional
     public void deleteItemById(long itemId, long userId) {
-        Item item = itemsRepository.findById(itemId)
-                .orElseThrow(() ->
-                        new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
+        Item item = checkItem(itemId);
         checkOwner(userId, item);
         itemsRepository.deleteById(itemId);
     }
@@ -186,13 +188,9 @@ public class ItemService {
 
     @Transactional
     public CommentDto createCommentByUser(CommentDto commentDto, long itemId, long userId) {
-        User user = usersRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException("Does not contain user with this id or id is invalid " + userId));
-        Item item = itemsRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException("Does not contain item with this id or id is invalid " + userId));
-        Booking booking = bookingRepository.findBookingByBookerIdAndEndIsBefore(userId, LocalDateTime.now())
-                .orElseThrow(() ->
-                        new ValidationException("Does not contain booking with this booker or id is invalid " + userId));
+        User user = checkUser(userId);
+        Item item = checkItem(itemId);
+        Booking booking = checkBooking(userId);
         if (commentDto.getText() == null || commentDto.getText().isBlank()) {
             throw new ValidationException("text is null or empty");
         }
@@ -220,6 +218,20 @@ public class ItemService {
             throw new NotFoundException("Only the owner can change item");
         }
     }
+    private User checkUser(long userId) {
+        return  usersRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException("Does not contain user with this id or id is invalid " + userId));
+    }
+    private Item checkItem(long itemId) {
+        return itemsRepository.findById(itemId).orElseThrow(() ->
+                new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
+    }
+    private Booking checkBooking(long bookerId) {
+        return bookingRepository.findBookingByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now())
+                .orElseThrow(() ->
+                        new ValidationException("Does not contain booking with this booker or id is invalid " + bookerId));
+    }
+
 
 
 }
