@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.yandex.shareit.booking.dto.BookingDto;
 import ru.practicum.yandex.shareit.booking.dto.BookingDtoToUser;
+import ru.practicum.yandex.shareit.booking.service.BookingServiceImpl;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -14,30 +15,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
-    private final BookingService bookingService;
+    private final BookingServiceImpl bookingServiceImpl;
 
     @Autowired
-    public BookingController(BookingService bookingService) {
-        this.bookingService = bookingService;
+    public BookingController(BookingServiceImpl bookingServiceImpl) {
+        this.bookingServiceImpl = bookingServiceImpl;
     }
 
     @PostMapping
     public BookingDto createBooking(@Valid @NotNull @RequestBody BookingDto bookingDto,
                                     @RequestHeader("X-Sharer-User-Id") long userId) {
-        return bookingService.saveBooking(bookingDto, userId);
+        return bookingServiceImpl.saveBooking(bookingDto, userId);
     }
 
     @PatchMapping({"/{bookingId}"})
     public BookingDtoToUser approveOrRejectBookingByOwner(@PathVariable long bookingId,
                                                           @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId,
                                                           @RequestParam boolean approved) {
-        return bookingService.approveOrRejectBookingByOwner(bookingId, userId, approved);
+        return bookingServiceImpl.approveOrRejectBookingByOwner(bookingId, userId, approved);
     }
 
     @GetMapping({"/{bookingId}"})
     public BookingDtoToUser findBookingByIdByItemOwnerOrBooker(@PositiveOrZero @PathVariable int bookingId,
                                                                @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        return bookingService.findBookingByIdByItemOwnerOrBooker(bookingId, userId);
+        return bookingServiceImpl.findBookingByIdByItemOwnerOrBooker(bookingId, userId);
     }
 
     @GetMapping()
@@ -46,7 +47,7 @@ public class BookingController {
                                                      @NotBlank @RequestHeader("X-Sharer-User-Id") long userId,
                                                      @RequestParam(defaultValue = "ALL") State state) {
 
-        return bookingService.findBookingsByCurrentUser(from, size, userId, state);
+        return bookingServiceImpl.findBookingsByCurrentUser(from, size, userId, state);
     }
 
     @GetMapping("/owner")
@@ -54,6 +55,6 @@ public class BookingController {
                                                       @RequestParam(defaultValue = "20") int size,
                                                       @NotBlank @RequestHeader("X-Sharer-User-Id") long userId,
                                                       @RequestParam(defaultValue = "ALL") State state) {
-        return bookingService.findBookingsByCurrentOwner(from, size, userId, state);
+        return bookingServiceImpl.findBookingsByCurrentOwner(from, size, userId, state);
     }
 }

@@ -1,4 +1,4 @@
-package ru.practicum.yandex.shareit.item;
+package ru.practicum.yandex.shareit.item.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

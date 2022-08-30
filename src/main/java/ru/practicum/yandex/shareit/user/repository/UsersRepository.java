@@ -1,4 +1,4 @@
-package ru.practicum.yandex.shareit.user;
+package ru.practicum.yandex.shareit.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,4 +1,4 @@
-package ru.practicum.yandex.shareit.item;
+package ru.practicum.yandex.shareit.item.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;

@@ -1,4 +1,4 @@
-package ru.practicum.yandex.shareit.booking;
+package ru.practicum.yandex.shareit.booking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -7,16 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.yandex.shareit.booking.BookingMapper;
+import ru.practicum.yandex.shareit.booking.BookingRepository;
+import ru.practicum.yandex.shareit.booking.State;
+import ru.practicum.yandex.shareit.booking.Status;
 import ru.practicum.yandex.shareit.booking.dto.BookingDto;
 import ru.practicum.yandex.shareit.booking.dto.BookingDtoToUser;
 import ru.practicum.yandex.shareit.booking.model.Booking;
 import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
-import ru.practicum.yandex.shareit.item.ItemService;
-import ru.practicum.yandex.shareit.item.ItemsRepository;
+import ru.practicum.yandex.shareit.item.repository.ItemsRepository;
 import ru.practicum.yandex.shareit.item.model.Item;
-import ru.practicum.yandex.shareit.user.UserService;
-import ru.practicum.yandex.shareit.user.UsersRepository;
+import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 import ru.practicum.yandex.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -25,29 +27,24 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-public class BookingService {
+public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
-    private final UserService userService;
-    private final ItemService itemService;
     private final ItemsRepository itemsRepository;
     private final UsersRepository usersRepository;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository,
-                          BookingMapper bookingMapper,
-                          UserService userService,
-                          ItemService itemService,
-                          ItemsRepository itemsRepository,
-                          UsersRepository usersRepository) {
+    public BookingServiceImpl(BookingRepository bookingRepository,
+                              BookingMapper bookingMapper,
+                              ItemsRepository itemsRepository,
+                              UsersRepository usersRepository) {
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
-        this.userService = userService;
-        this.itemService = itemService;
         this.itemsRepository = itemsRepository;
         this.usersRepository = usersRepository;
     }
 
+    @Override
     @Transactional
     public BookingDto saveBooking(BookingDto bookingDto, long userId) {
         User bookingCreator = checkUser(userId);
@@ -79,6 +76,7 @@ public class BookingService {
         return bookingMapper.toDto(savingBooking);
     }
 
+    @Override
     @Transactional
     public BookingDtoToUser approveOrRejectBookingByOwner(long bookingId, long userId, boolean approved) {
         User user = checkUser(userId);
@@ -101,6 +99,7 @@ public class BookingService {
     }
 
 
+    @Override
     public BookingDtoToUser findBookingByIdByItemOwnerOrBooker(long bookingId, long userId) {
         Booking booking = checkBooking(bookingId);
         Item bookingItem = booking.getItem();
@@ -115,6 +114,7 @@ public class BookingService {
         return bookingMapper.toBookingDtoToUser(booking);
     }
 
+    @Override
     public List<BookingDtoToUser> findBookingsByCurrentUser(int from, int size, long userId, State state) {
 
         if (from < 0 || size <= 0) {
@@ -128,7 +128,8 @@ public class BookingService {
         return getBookingDtoToUsers(state, bookings);
     }
 
-    List<BookingDtoToUser> findBookingsByCurrentOwner(int from, int size, long userId, State state) {
+    @Override
+    public List<BookingDtoToUser> findBookingsByCurrentOwner(int from, int size, long userId, State state) {
         if (from < 0 || size <= 0) {
             throw new ValidationException("from or size are not valid");
         }

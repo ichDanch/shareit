@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.yandex.shareit.item.dto.CommentDto;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
+import ru.practicum.yandex.shareit.item.mapper.ItemMapper;
+import ru.practicum.yandex.shareit.item.service.ItemServiceImpl;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -14,13 +16,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-    private final ItemService itemService;
+    private final ItemServiceImpl itemServiceImpl;
     private final ItemMapper itemMapper;
 
     @Autowired
-    public ItemController(ItemService itemService,
+    public ItemController(ItemServiceImpl itemServiceImpl,
                           ItemMapper itemMapper) {
-        this.itemService = itemService;
+        this.itemServiceImpl = itemServiceImpl;
         this.itemMapper = itemMapper;
     }
 
@@ -28,7 +30,7 @@ public class ItemController {
     public ItemDto createItem(@Valid @NotNull @RequestBody ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") long userId) {
 
-        return itemService.saveItem(itemDto, userId);
+        return itemServiceImpl.saveItem(itemDto, userId);
 
     }
 
@@ -36,13 +38,13 @@ public class ItemController {
     public ItemDto patchItem(@Valid @RequestBody ItemDto itemDto,
                              @PathVariable long itemId,
                              @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.patchItem(itemDto, itemId, userId);
+        return itemServiceImpl.patchItem(itemDto, itemId, userId);
     }
 
     @GetMapping({"/{itemId}"})
     public ItemDto findItemById(@PositiveOrZero @PathVariable int itemId,
                                 @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.findById(itemId, userId);
+        return itemServiceImpl.findById(itemId, userId);
 
     }
 
@@ -50,12 +52,12 @@ public class ItemController {
     public List<ItemDto> findAllItemsByOwnerId(@RequestParam(defaultValue = "0") int from,
                                                @RequestParam(defaultValue = "20") int size,
                                                @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long ownerId) {
-        return itemService.findAllItemsByOwnerId(from, size, ownerId);
+        return itemServiceImpl.findAllItemsByOwnerId(from, size, ownerId);
     }
 
     @GetMapping({"/search"})
     public List<ItemDto> itemsByNameAndDescription(@RequestParam String text) {
-        return itemService.itemsByNameAndDescription(text)
+        return itemServiceImpl.itemsByNameAndDescription(text)
                 .stream()
                 .map(itemMapper::toDto)
                 .collect(Collectors.toList());
@@ -66,14 +68,14 @@ public class ItemController {
     public void deleteItem(@PositiveOrZero @PathVariable int itemId,
                            @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
 
-        itemService.deleteItemById(itemId, userId);
+        itemServiceImpl.deleteItemById(itemId, userId);
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@Valid @NotNull @RequestBody CommentDto commentDto,
                                     @PathVariable long itemId,
                                     @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.createCommentByUser(commentDto, itemId, userId);
+        return itemServiceImpl.createCommentByUser(commentDto, itemId, userId);
 
     }
 }
