@@ -3,7 +3,6 @@ package ru.practicum.yandex.shareit.item.service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.yandex.shareit.item.dto.CommentDto;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
-import ru.practicum.yandex.shareit.item.model.Item;
 
 import java.util.List;
 

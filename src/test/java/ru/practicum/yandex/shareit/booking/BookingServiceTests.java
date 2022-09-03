@@ -1,7 +1,10 @@
 package ru.practicum.yandex.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -23,7 +26,8 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //@DirtiesContext
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -195,7 +199,7 @@ public class BookingServiceTests {
         long bookingOneId = bookingService.saveBooking(bookingDtoOne, userTwoId).getId();
         long userThreeId = userService.saveUser(userThree).getId();
 
-        List<BookingDtoToUser> bookings = bookingService.findBookingsByCurrentUser(0, 20,userTwoId, State.ALL);
+        List<BookingDtoToUser> bookings = bookingService.findBookingsByCurrentUser(0, 20, userTwoId, State.ALL);
 
         assertEquals(expectedBookings, bookings);
     }
@@ -210,7 +214,7 @@ public class BookingServiceTests {
         long bookingOneId = bookingService.saveBooking(bookingDtoOne, userTwoId).getId();
         long userThreeId = userService.saveUser(userThree).getId();
 
-        List<BookingDtoToUser> bookings = bookingService.findBookingsByCurrentOwner(0, 20,userOneId, State.ALL);
+        List<BookingDtoToUser> bookings = bookingService.findBookingsByCurrentOwner(0, 20, userOneId, State.ALL);
 
         assertEquals(expectedBookings, bookings);
     }

@@ -15,8 +15,8 @@ import ru.practicum.yandex.shareit.item.service.ItemServiceImpl;
 @Transactional
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemServiceTests {
-        @Autowired
-        private final ItemServiceImpl itemService;
+    @Autowired
+    private final ItemServiceImpl itemService;
 
 
 }

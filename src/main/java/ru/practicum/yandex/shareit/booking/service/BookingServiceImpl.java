@@ -16,10 +16,10 @@ import ru.practicum.yandex.shareit.booking.dto.BookingDtoToUser;
 import ru.practicum.yandex.shareit.booking.model.Booking;
 import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
-import ru.practicum.yandex.shareit.item.repository.ItemsRepository;
 import ru.practicum.yandex.shareit.item.model.Item;
-import ru.practicum.yandex.shareit.user.repository.UsersRepository;
+import ru.practicum.yandex.shareit.item.repository.ItemsRepository;
 import ru.practicum.yandex.shareit.user.model.User;
+import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

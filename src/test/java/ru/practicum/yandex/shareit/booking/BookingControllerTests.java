@@ -9,17 +9,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.yandex.shareit.booking.dto.BookingDto;
 import ru.practicum.yandex.shareit.booking.dto.BookingDtoToUser;
-import ru.practicum.yandex.shareit.booking.model.Booking;
 import ru.practicum.yandex.shareit.booking.service.BookingServiceImpl;
-import ru.practicum.yandex.shareit.item.dto.ItemDto;
 import ru.practicum.yandex.shareit.item.model.Item;
-import ru.practicum.yandex.shareit.item.service.ItemServiceImpl;
-import ru.practicum.yandex.shareit.user.dto.UserDto;
 import ru.practicum.yandex.shareit.user.model.User;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -45,13 +40,13 @@ public class BookingControllerTests {
             null);
     BookingDto expectedBookingDto = new BookingDto(
             1L,
-            LocalDateTime.of(2023,12,1,10,10,10),
-            LocalDateTime.of(2023,12,2,10,10,10),
+            LocalDateTime.of(2023, 12, 1, 10, 10, 10),
+            LocalDateTime.of(2023, 12, 2, 10, 10, 10),
             1L);
     BookingDtoToUser expectedBookingDtoToUser = new BookingDtoToUser(
             2L,
-            LocalDateTime.of(2023,12,1,10,10,10),
-            LocalDateTime.of(2023,12,2,10,10,10),
+            LocalDateTime.of(2023, 12, 1, 10, 10, 10),
+            LocalDateTime.of(2023, 12, 2, 10, 10, 10),
             expectedItemOne,
             expectedUserOne,
             Status.WAITING);
@@ -70,6 +65,7 @@ public class BookingControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(expectedBookingDto)));
     }
+
     @Test
     void shouldReturnBookingDtoToUserWhenApprove() throws Exception {
 

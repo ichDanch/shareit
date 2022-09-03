@@ -13,18 +13,18 @@ import ru.practicum.yandex.shareit.booking.dto.BookingDtoToItem;
 import ru.practicum.yandex.shareit.booking.model.Booking;
 import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
-import ru.practicum.yandex.shareit.item.mapper.CommentMapper;
-import ru.practicum.yandex.shareit.item.repository.CommentsRepository;
-import ru.practicum.yandex.shareit.item.mapper.ItemMapper;
-import ru.practicum.yandex.shareit.item.repository.ItemsRepository;
 import ru.practicum.yandex.shareit.item.dto.CommentDto;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
+import ru.practicum.yandex.shareit.item.mapper.CommentMapper;
+import ru.practicum.yandex.shareit.item.mapper.ItemMapper;
 import ru.practicum.yandex.shareit.item.model.Comment;
 import ru.practicum.yandex.shareit.item.model.Item;
+import ru.practicum.yandex.shareit.item.repository.CommentsRepository;
+import ru.practicum.yandex.shareit.item.repository.ItemsRepository;
 import ru.practicum.yandex.shareit.request.model.ItemRequest;
 import ru.practicum.yandex.shareit.request.repository.ItemRequestsRepository;
-import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 import ru.practicum.yandex.shareit.user.model.User;
+import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -166,7 +166,7 @@ public class ItemServiceImpl implements ItemService {
                         text, text, pageWithElements);
         List<Item> items = page.get().collect(Collectors.toList());
 
-        return   items.stream()
+        return items.stream()
                 .map(this::setLastAndNextBookingToItem)
                 .map(this::setComments)
                 .collect(Collectors.toList());

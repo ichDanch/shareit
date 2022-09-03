@@ -11,16 +11,12 @@ import ru.practicum.yandex.shareit.request.dto.ItemRequestDto;
 import ru.practicum.yandex.shareit.request.service.ItemRequestServiceImpl;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,36 +26,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = ItemRequestController.class)
 public class RequestControllerTests {
 
-        @Autowired
-        ObjectMapper mapper;
+    @Autowired
+    ObjectMapper mapper;
 
-        @MockBean
-        ItemRequestServiceImpl itemRequestService;
+    @MockBean
+    ItemRequestServiceImpl itemRequestService;
 
-        @Autowired
-        private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-        ItemRequestDto itemRequestDto = new ItemRequestDto(
-                1L,
-                "Description",
-                LocalDateTime
-                        .of(2023,12,12,12,12,12).toInstant(ZoneOffset.UTC),
-                new ArrayList<>());
+    ItemRequestDto itemRequestDto = new ItemRequestDto(
+            1L,
+            "Description",
+            LocalDateTime
+                    .of(2023, 12, 12, 12, 12, 12).toInstant(ZoneOffset.UTC),
+            new ArrayList<>());
 
-        @Test
-        void shouldReturnItemRequestDtoWhenCreateItemRequest() throws Exception {
-            when(itemRequestService.saveItemRequest(any(), anyLong()))
-                    .thenReturn(itemRequestDto);
+    @Test
+    void shouldReturnItemRequestDtoWhenCreateItemRequest() throws Exception {
+        when(itemRequestService.saveItemRequest(any(), anyLong()))
+                .thenReturn(itemRequestDto);
 
-            mvc.perform(post("/requests")
-                            .content(mapper.writeValueAsString(itemRequestDto))
-                            .characterEncoding(StandardCharsets.UTF_8)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header("X-Sharer-User-Id", 1L)
-                            .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(mapper.writeValueAsString(itemRequestDto)));
-        }
+        mvc.perform(post("/requests")
+                        .content(mapper.writeValueAsString(itemRequestDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(itemRequestDto)));
+    }
 
     @Test
     void shouldReturnItemRequestDtoWhenFindRequestsByOwner() throws Exception {
@@ -77,7 +73,7 @@ public class RequestControllerTests {
 
     @Test
     void shouldReturnAllRequestsWhenFindAllRequests() throws Exception {
-        when(itemRequestService.findAllRequests( anyInt(), anyInt(), anyLong()))
+        when(itemRequestService.findAllRequests(anyInt(), anyInt(), anyLong()))
                 .thenReturn(List.of(itemRequestDto));
 
         mvc.perform(get("/requests/all")
@@ -102,7 +98,6 @@ public class RequestControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(itemRequestDto)));
     }
-
 
 
 }

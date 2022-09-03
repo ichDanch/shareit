@@ -8,8 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.yandex.shareit.user.UserController;
-import ru.practicum.yandex.shareit.user.dto.UserDto;
 import ru.practicum.yandex.shareit.user.UserServiceImpl;
+import ru.practicum.yandex.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
 
@@ -23,35 +23,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@SpringBootTest
 @WebMvcTest(controllers = UserController.class)
 class ShareitApplicationTests {
-		@Autowired
-		ObjectMapper mapper;
+    @Autowired
+    ObjectMapper mapper;
 
-		@MockBean
-		UserServiceImpl userService;
+    @MockBean
+    UserServiceImpl userService;
 
-		@Autowired
-		private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-		private final UserDto userDto1 = UserDto.builder()
-				.id(1L)
-				.name("User1")
-				.email("user1@mail.ru")
-				.build();
+    private final UserDto userDto1 = UserDto.builder()
+            .id(1L)
+            .name("User1")
+            .email("user1@mail.ru")
+            .build();
 
-		@Test
-		void testCreateUser() throws Exception {
-			when(userService.saveUser(any()))
-					.thenReturn(userDto1);
+    @Test
+    void testCreateUser() throws Exception {
+        when(userService.saveUser(any()))
+                .thenReturn(userDto1);
 
-			mvc.perform(post("/users")
-							.content(mapper.writeValueAsString(userDto1))
-							.characterEncoding(StandardCharsets.UTF_8)
-							.contentType(MediaType.APPLICATION_JSON)
-							.accept(MediaType.APPLICATION_JSON))
-					.andExpect(status().isOk())
-					.andExpect(jsonPath("$.id", is(userDto1.getId()), Long.class))
-					.andExpect(jsonPath("$.name", is(userDto1.getName())))
-					.andExpect(jsonPath("$.email", is(userDto1.getEmail())));
-		}
+        mvc.perform(post("/users")
+                        .content(mapper.writeValueAsString(userDto1))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(userDto1.getId()), Long.class))
+                .andExpect(jsonPath("$.name", is(userDto1.getName())))
+                .andExpect(jsonPath("$.email", is(userDto1.getEmail())));
+    }
 
 }

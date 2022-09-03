@@ -3,16 +3,11 @@ package ru.practicum.yandex.shareit.request.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.yandex.shareit.item.dto.ItemDto;
-import ru.practicum.yandex.shareit.item.model.Item;
 import ru.practicum.yandex.shareit.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity

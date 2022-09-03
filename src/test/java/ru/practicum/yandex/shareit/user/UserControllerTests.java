@@ -50,10 +50,10 @@ public class UserControllerTests {
                 .andExpect(jsonPath("$.name", is(expectedUserOneDto.getName())))
                 .andExpect(jsonPath("$.email", is(expectedUserOneDto.getEmail())));
     }
-    @Test
 
+    @Test
     void shouldReturnUserDtoWhenUpdateUser() throws Exception {
-        when(userService.updateUser(expectedUserOneDto, 1L ))
+        when(userService.updateUser(expectedUserOneDto, 1L))
                 .thenReturn(expectedUserOneDto);
 
         mvc.perform(patch("/users/1")

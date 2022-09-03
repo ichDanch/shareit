@@ -13,7 +13,6 @@ import ru.practicum.yandex.shareit.item.mapper.ItemMapper;
 import ru.practicum.yandex.shareit.item.service.ItemServiceImpl;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +37,7 @@ public class ItemControllerTests {
     ItemDto expectedItemDtoOne = new ItemDto(1L, "ItemOne", "ItemOneDescription", true, 0, new ArrayList<>());
     ItemDto expectedItemDtoTwo = new ItemDto(2L, "ItemTwo", "ItemTwoDescription", true, 0, new ArrayList<>());
     CommentDto expectedCommentDto = new CommentDto(1L, "CommentDto", "Author", LocalDateTime.now());
+
     @Test
     void shouldReturnItemDtoWhenCreateItem() throws Exception {
         when(itemService.saveItem(any(), anyLong()))
@@ -96,6 +96,7 @@ public class ItemControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(expectedItemDtoOne, expectedItemDtoTwo))));
     }
+
     @Test
     void shouldReturnCommentDtoWhenCreateComment() throws Exception {
         when(itemService.createCommentByUser(any(), anyLong(), anyLong()))

@@ -30,7 +30,6 @@ public class User {
     private String email;
 
 
-
     @Override
     public String toString() {
         return "User{" +

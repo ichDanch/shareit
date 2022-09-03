@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
-import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 import ru.practicum.yandex.shareit.user.dto.UserDto;
 import ru.practicum.yandex.shareit.user.model.User;
+import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +38,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto updateUser(UserDto userDto, long id) {
         User user = usersRepository.findById(id).orElseThrow(() ->
-                new NotFoundException("Does not contain user with this id or id is invalid " + id));;
+                new NotFoundException("Does not contain user with this id or id is invalid " + id));
+        ;
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }

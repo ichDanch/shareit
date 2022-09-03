@@ -16,10 +16,8 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
@@ -70,7 +68,7 @@ public class UserServiceTests {
     @Test
     void shouldReturnValidationExceptionWhenEmailNull() {
         User userWithoutEmail = new User(1, "Name", null);
-        assertThrows(ValidationException.class, ()->userService.saveUser(userWithoutEmail));
+        assertThrows(ValidationException.class, () -> userService.saveUser(userWithoutEmail));
     }
 
 
@@ -90,7 +88,7 @@ public class UserServiceTests {
         when(usersRepository.findAll()).thenReturn(List.of(userOne, userTwo));
         when(userMapper.toDto(userOne)).thenReturn(expectedUserOneDto);
         when(userMapper.toDto(userTwo)).thenReturn(expectedUserTwoDto);
-        List<UserDto> usersDto= userService.findAll();
+        List<UserDto> usersDto = userService.findAll();
         assertNotNull(usersDto);
         assertEquals(2, usersDto.size());
         assertThat(usersDto, equalTo(List.of(expectedUserOneDto, expectedUserTwoDto)));

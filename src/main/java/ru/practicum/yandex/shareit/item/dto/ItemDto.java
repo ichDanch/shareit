@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.yandex.shareit.booking.dto.BookingDtoToItem;
 
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -32,6 +31,7 @@ public class ItemDto {
         this.available = available;
         this.requestId = requestId;
     }
+
     public ItemDto(long id, String name, String description, Boolean available, long requestId, List<CommentDto> comments) {
         this.id = id;
         this.name = name;

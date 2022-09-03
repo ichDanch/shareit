@@ -8,16 +8,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.yandex.shareit.exceptions.NotFoundException;
 import ru.practicum.yandex.shareit.exceptions.ValidationException;
-import ru.practicum.yandex.shareit.item.mapper.ItemMapper;
-import ru.practicum.yandex.shareit.item.repository.ItemsRepository;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
+import ru.practicum.yandex.shareit.item.mapper.ItemMapper;
 import ru.practicum.yandex.shareit.item.model.Item;
-import ru.practicum.yandex.shareit.request.model.ItemRequest;
+import ru.practicum.yandex.shareit.item.repository.ItemsRepository;
 import ru.practicum.yandex.shareit.request.ItemRequestMapper;
 import ru.practicum.yandex.shareit.request.dto.ItemRequestDto;
+import ru.practicum.yandex.shareit.request.model.ItemRequest;
 import ru.practicum.yandex.shareit.request.repository.ItemRequestsRepository;
-import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 import ru.practicum.yandex.shareit.user.model.User;
+import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +90,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> findAllRequests(int from, int size, long userId) {
-        if (from < 0 || size<=0) {
+        if (from < 0 || size <= 0) {
             throw new ValidationException("from or size are not valid");
         }
         User user = checkUser(userId);
