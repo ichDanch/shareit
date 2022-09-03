@@ -64,7 +64,7 @@ public class RequestServiceTests {
 
         ItemRequestDto savedItemRequestDto = itemRequestService.saveItemRequest(itemRequestDto, userOneId);
 
-        
+
         assertEquals(itemRequestDto.getId(), savedItemRequestDto.getId());
         assertEquals(itemRequestDto.getDescription(), savedItemRequestDto.getDescription());
         assertEquals(itemRequestDto.getItems(), savedItemRequestDto.getItems());
