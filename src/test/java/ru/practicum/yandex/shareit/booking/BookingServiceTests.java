@@ -140,7 +140,7 @@ public class BookingServiceTests {
         long userTwoId = userService.saveUser(userTwo).getId();
         long bookingOneId = bookingService.saveBooking(bookingDtoOne, userTwoId).getId();
 
-        BookingDtoToUser expectedBDTO = bookingService.approveOrRejectBookingByOwner(bookingOneId, userOneId, true);
+        BookingDtoToUser expectedBDTO = bookingService.approveBookingByOwner(bookingOneId, userOneId, true);
 
         assertThat(expectedBDTO, equalTo(expectedBookingDtoToUserApproved));
     }
@@ -153,10 +153,10 @@ public class BookingServiceTests {
         long itemTwoId = itemService.saveItem(itemDtoTwo, userOneId).getId();
         long userTwoId = userService.saveUser(userTwo).getId();
         long bookingOneId = bookingService.saveBooking(bookingDtoOne, userTwoId).getId();
-        BookingDtoToUser approvedBDTO = bookingService.approveOrRejectBookingByOwner(bookingOneId, userOneId, true);
+        BookingDtoToUser approvedBDTO = bookingService.approveBookingByOwner(bookingOneId, userOneId, true);
 
         assertThrows(ValidationException.class,
-                () -> bookingService.approveOrRejectBookingByOwner(bookingOneId, userOneId, true));
+                () -> bookingService.approveBookingByOwner(bookingOneId, userOneId, true));
     }
 
 

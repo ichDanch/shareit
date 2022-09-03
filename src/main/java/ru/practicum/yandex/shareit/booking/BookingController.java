@@ -32,7 +32,7 @@ public class BookingController {
     public BookingDtoToUser approveOrRejectBookingByOwner(@PathVariable long bookingId,
                                                           @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId,
                                                           @RequestParam boolean approved) {
-        return bookingServiceImpl.approveOrRejectBookingByOwner(bookingId, userId, approved);
+        return bookingServiceImpl.approveBookingByOwner(bookingId, userId, approved);
     }
 
     @GetMapping({"/{bookingId}"})

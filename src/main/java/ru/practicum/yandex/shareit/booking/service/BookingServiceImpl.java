@@ -78,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDtoToUser approveOrRejectBookingByOwner(long bookingId, long userId, boolean approved) {
+    public BookingDtoToUser approveBookingByOwner(long bookingId, long userId, boolean approved) {
         User user = checkUser(userId);
         Booking booking = checkBooking(bookingId);
         Item item = booking.getItem();
@@ -87,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
         if (ownerId != userId) {
             throw new NotFoundException("Change status can only owner");
         }
-        if (approved & booking.getStatus().equals(Status.APPROVED)) {
+        if (approved && booking.getStatus().equals(Status.APPROVED)) {
             throw new ValidationException("Status is already " + Status.APPROVED);
         }
         if (approved) {

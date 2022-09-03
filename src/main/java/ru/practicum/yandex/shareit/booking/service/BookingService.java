@@ -12,7 +12,7 @@ public interface BookingService {
     BookingDto saveBooking(BookingDto bookingDto, long userId);
 
     @Transactional
-    BookingDtoToUser approveOrRejectBookingByOwner(long bookingId, long userId, boolean approved);
+    BookingDtoToUser approveBookingByOwner(long bookingId, long userId, boolean approved);
 
     BookingDtoToUser findBookingByIdByItemOwnerOrBooker(long bookingId, long userId);
 

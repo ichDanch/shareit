@@ -69,7 +69,7 @@ public class BookingControllerTests {
     @Test
     void shouldReturnBookingDtoToUserWhenApprove() throws Exception {
 
-        when(bookingService.approveOrRejectBookingByOwner(anyLong(), anyLong(), anyBoolean()))
+        when(bookingService.approveBookingByOwner(anyLong(), anyLong(), anyBoolean()))
                 .thenReturn(expectedBookingDtoToUser);
 
         mvc.perform(patch("/bookings/1?approved=true")
