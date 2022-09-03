@@ -43,7 +43,7 @@ public class RequestServiceTests {
             LocalDateTime.now()
                     .withNano(0)
                     .toInstant(ZoneOffset.UTC),
-            null);
+            new ArrayList<>());
     Item itemOne = new Item(1L,
             "ItemOne",
             "ItemOneDescription",
