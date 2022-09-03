@@ -276,7 +276,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-checkstyle-plugin</artifactId>
 						<configuration>
-							<excludes>**/generated/**/*</excludes>
+							<excludes>ru/practicum/yandex/shareit/request/ItemRequestMapperImpl.java</excludes>
 						</configuration>
 					</plugin>
 					<plugin>
