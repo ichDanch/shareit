@@ -2,14 +2,16 @@ package ru.practicum.yandex.shareit.request;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 import ru.practicum.yandex.shareit.request.dto.ItemRequestDto;
 import ru.practicum.yandex.shareit.request.model.ItemRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",imports = {ArrayList.class})
 @Component
 public interface ItemRequestMapper {
 
