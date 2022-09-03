@@ -1,4 +1,4 @@
-package ru.practicum.yandex.shareit.user.service;
+package ru.practicum.yandex.shareit.user;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.yandex.shareit.user.dto.UserDto;
@@ -13,9 +13,9 @@ public interface UserService {
     @Transactional
     UserDto updateUser(UserDto userDto, long id);
 
-    List<User> findAll();
+    List<UserDto> findAll();
 
-    User findById(long id);
+    UserDto findById(long id);
 
     @Transactional
     void deleteUserById(long id);

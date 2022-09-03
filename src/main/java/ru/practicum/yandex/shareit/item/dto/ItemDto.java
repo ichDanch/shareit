@@ -32,4 +32,12 @@ public class ItemDto {
         this.available = available;
         this.requestId = requestId;
     }
+    public ItemDto(long id, String name, String description, Boolean available, long requestId, List<CommentDto> comments) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.requestId = requestId;
+        this.comments = comments;
+    }
 }

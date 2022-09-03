@@ -56,12 +56,10 @@ public class ItemController {
     }
 
     @GetMapping({"/search"})
-    public List<ItemDto> itemsByNameAndDescription(@RequestParam String text) {
-        return itemServiceImpl.itemsByNameAndDescription(text)
-                .stream()
-                .map(itemMapper::toDto)
-                .collect(Collectors.toList());
-
+    public List<ItemDto> itemsByNameAndDescription(@RequestParam(defaultValue = "0") int from,
+                                                   @RequestParam(defaultValue = "20") int size,
+                                                   @RequestParam String text) {
+        return itemServiceImpl.itemsByNameAndDescription(from, size, text);
     }
 
     @DeleteMapping({"/{itemId}"})

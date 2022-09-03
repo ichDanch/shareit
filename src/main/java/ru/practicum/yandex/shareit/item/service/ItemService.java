@@ -21,7 +21,7 @@ public interface ItemService {
     @Transactional
     void deleteItemById(long itemId, long userId);
 
-    List<Item> itemsByNameAndDescription(String text);
+    List<ItemDto> itemsByNameAndDescription(int from, int size, String text);
 
     @Transactional
     CommentDto createCommentByUser(CommentDto commentDto, long itemId, long userId);

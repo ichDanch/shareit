@@ -152,12 +152,24 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> itemsByNameAndDescription(String text) {
+    public List<ItemDto> itemsByNameAndDescription(int from, int size, String text) {
         if (text.isBlank()) {
-            return new ArrayList<Item>();
+            return new ArrayList<ItemDto>();
         }
-        return itemsRepository
-                .findItemsByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text, text);
+
+        if (from < 0 || size <= 0) {
+            throw new ValidationException("from or size are not valid");
+        }
+        Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("id"));
+        Page<Item> page = itemsRepository
+                .findItemsByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
+                        text, text, pageWithElements);
+        List<Item> items = page.get().collect(Collectors.toList());
+
+        return   items.stream()
+                .map(this::setLastAndNextBookingToItem)
+                .map(this::setComments)
+                .collect(Collectors.toList());
     }
 
     @Override
