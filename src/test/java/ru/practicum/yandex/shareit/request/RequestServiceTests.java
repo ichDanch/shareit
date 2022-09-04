@@ -42,6 +42,7 @@ public class RequestServiceTests {
             1L,
             "Description",
             LocalDateTime.now()
+                    .withSecond(0)
                     .withNano(0),
             new ArrayList<>());
 
@@ -75,7 +76,7 @@ public class RequestServiceTests {
         assertEquals(itemRequestDto.getId(), savedItemRequestDto.getId());
         assertEquals(itemRequestDto.getDescription(), savedItemRequestDto.getDescription());
         assertEquals(itemRequestDto.getItems(), savedItemRequestDto.getItems());
-        assertEquals(itemRequestDto.getCreated(), savedItemRequestDto.getCreated().withNano(0));
+        assertEquals(itemRequestDto.getCreated(), savedItemRequestDto.getCreated().withSecond(0).withNano(0));
     }
 
     @Test
