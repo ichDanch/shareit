@@ -17,10 +17,4 @@ public class ItemRequestDto {
     private String description;
     private LocalDateTime created;
     private List<ItemDto> items = new ArrayList<>();
-
-    public ItemRequestDto(long id, String description, LocalDateTime created) {
-        this.id = id;
-        this.description = description;
-        this.created = created;
-    }
 }

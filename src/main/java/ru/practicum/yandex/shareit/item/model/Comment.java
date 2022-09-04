@@ -33,9 +33,4 @@ public class Comment {
         this.text = text;
     }
 
-    public Comment(long id, String text, LocalDateTime created) {
-        this.id = id;
-        this.text = text;
-        this.created = created;
-    }
 }
