@@ -1,13 +1,9 @@
 package ru.practicum.yandex.shareit.request.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
 
-import javax.persistence.Transient;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +11,14 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class ItemRequestDto {
     private long id;
     private String description;
-    private Instant created;
+    private LocalDateTime created;
     private List<ItemDto> items = new ArrayList<>();
 
-    public ItemRequestDto() {
-    }
-
-    public ItemRequestDto(long id, String description, Instant created) {
+    public ItemRequestDto(long id, String description, LocalDateTime created) {
         this.id = id;
         this.description = description;
         this.created = created;

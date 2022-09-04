@@ -7,7 +7,7 @@ import ru.practicum.yandex.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -26,7 +26,7 @@ public class ItemRequest {
     @JoinColumn(name = "requestor_id")
     private User requestor;
     @Column(name = "created")
-    private final Instant created = Instant.now();
+    private LocalDateTime created;
 //    @Transient
 //    private List<Item> items = new ArrayList<>();
 }

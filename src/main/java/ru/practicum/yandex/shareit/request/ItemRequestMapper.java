@@ -15,8 +15,6 @@ import java.util.List;
 @Component
 public interface ItemRequestMapper {
 
-    ItemRequestMapper INSTANCE = Mappers.getMapper(ItemRequestMapper.class);
-
     @Mapping(source = "id", target = "id")
     @Mapping(source = "created", target = "created")
     ItemRequestDto toDto(ItemRequest itemRequest);

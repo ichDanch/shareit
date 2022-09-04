@@ -19,6 +19,7 @@ import ru.practicum.yandex.shareit.request.repository.ItemRequestsRepository;
 import ru.practicum.yandex.shareit.user.model.User;
 import ru.practicum.yandex.shareit.user.repository.UsersRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,6 +53,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
         ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestDto);
         itemRequest.setRequestor(user);
+        itemRequest.setCreated(LocalDateTime.now());
         ItemRequest itemRequestToReturn = itemRequestsRepository.save(itemRequest);
         return itemRequestMapper.toDto(itemRequestToReturn);
     }

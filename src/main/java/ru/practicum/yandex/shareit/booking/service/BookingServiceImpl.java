@@ -118,7 +118,8 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDtoToUser> findBookingsByCurrentUser(int from, int size, long userId, State state) {
 
         if (from < 0 || size <= 0) {
-            throw new ValidationException("from or size are not valid");
+            throw new ValidationException(
+                    "from: "+ from + " or " +"size: "+ size +" are not valid when findBookingsByCurrentUser");
         }
         User currentUser = checkUser(userId);
         Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("start").descending());
@@ -131,7 +132,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDtoToUser> findBookingsByCurrentOwner(int from, int size, long userId, State state) {
         if (from < 0 || size <= 0) {
-            throw new ValidationException("from or size are not valid");
+            throw new ValidationException(
+                    "from: "+ from + " or " +"size: "+ size +" are not valid when findBookingsByCurrentOwner");
         }
 
         User currentOwner = checkUser(userId);
@@ -140,7 +142,7 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = page.get().collect(Collectors.toList());
 
         if (bookings.isEmpty()) {
-            throw new ValidationException("Need at least one thing");
+            throw new ValidationException("Need at least one thing when findBookingsByCurrentOwner");
         }
         return getBookingDtoToUsers(state, bookings);
     }

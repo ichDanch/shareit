@@ -20,6 +20,7 @@ import ru.practicum.yandex.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,9 +42,9 @@ public class RequestServiceTests {
             1L,
             "Description",
             LocalDateTime.now()
-                    .withNano(0)
-                    .toInstant(ZoneOffset.UTC),
+                    .withNano(0),
             new ArrayList<>());
+
     Item itemOne = new Item(1L,
             "ItemOne",
             "ItemOneDescription",
@@ -55,7 +56,13 @@ public class RequestServiceTests {
             "ItemOneDescription",
             true,
             1L,
-            new ArrayList<>());
+            null);
+    ItemRequestDto itemRequestDtoWithItem = new ItemRequestDto(
+            1L,
+            "Description",
+            LocalDateTime.now()
+                    .withNano(0),
+            List.of(itemDtoOne));
 
     @Test
     @Order(1)
@@ -68,19 +75,21 @@ public class RequestServiceTests {
         assertEquals(itemRequestDto.getId(), savedItemRequestDto.getId());
         assertEquals(itemRequestDto.getDescription(), savedItemRequestDto.getDescription());
         assertEquals(itemRequestDto.getItems(), savedItemRequestDto.getItems());
+        assertEquals(itemRequestDto.getCreated(), savedItemRequestDto.getCreated().withNano(0));
     }
 
-//    @Test
-//    @Order(2)
-//    void shouldReturnItemRequestDtoWhenFindRequestsByOwner() {
-//        long userOneId = userService.saveUser(userOne).getId();
-//        long requestDtoId = itemRequestService.saveItemRequest(itemRequestDto,userOneId).getId();
-//        long itemId = itemService.saveItem(itemDtoOne, userOneId).getId();
-//
-//        ItemRequestDto findRequest = itemRequestService.findRequestById(userOneId,requestDtoId);
-//
-//        assertEquals(itemRequestDto.getId(), findRequest.getId());
-//        assertEquals(itemRequestDto.getDescription(), findRequest.getDescription());
-//        assertEquals(itemRequestDto.getItems(), findRequest.getItems());
-//    }
+    @Test
+    @Order(2)
+    void shouldReturnItemRequestDtoWhenFindRequestsByOwner() {
+        long userOneId = userService.saveUser(userOne).getId();
+        long requestDtoId = itemRequestService.saveItemRequest(itemRequestDto,userOneId).getId();
+        long userTwoId = userService.saveUser(userTwo).getId();
+        long itemId = itemService.saveItem(itemDtoOne, userTwoId).getId();
+
+        ItemRequestDto findRequest = itemRequestService.findRequestById(userTwoId,requestDtoId);
+
+        assertEquals(itemRequestDtoWithItem.getId(), findRequest.getId());
+        assertEquals(itemRequestDtoWithItem.getDescription(), findRequest.getDescription());
+        assertEquals(itemRequestDtoWithItem.getItems(), findRequest.getItems());
+    }
 }

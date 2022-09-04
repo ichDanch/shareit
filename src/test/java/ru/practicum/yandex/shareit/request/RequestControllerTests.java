@@ -39,7 +39,7 @@ public class RequestControllerTests {
             1L,
             "Description",
             LocalDateTime
-                    .of(2023, 12, 12, 12, 12, 12).toInstant(ZoneOffset.UTC),
+                    .of(2023, 12, 12, 12, 12, 12),
             new ArrayList<>());
 
     @Test
