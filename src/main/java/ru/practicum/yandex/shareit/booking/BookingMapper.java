@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import ru.practicum.yandex.shareit.booking.dto.BookingDto;
 import ru.practicum.yandex.shareit.booking.dto.BookingDtoToItem;
 import ru.practicum.yandex.shareit.booking.dto.BookingDtoToUser;
-import ru.practicum.yandex.shareit.booking.dto.BookingDtoWithStatus;
 import ru.practicum.yandex.shareit.booking.model.Booking;
 
 @Component
@@ -17,15 +16,6 @@ public class BookingMapper {
                 booking.getStart(),
                 booking.getEnd(),
                 booking.getItem().getId());
-    }
-
-    public BookingDtoWithStatus toDtoWithStatus(Booking booking) {
-        return new BookingDtoWithStatus(
-                booking.getId(),
-                booking.getStatus(),
-                booking.getBooker().getId(),
-                booking.getItem().getId(),
-                booking.getItem().getName());
     }
 
     public Booking toBooking(BookingDto bookingDto) {

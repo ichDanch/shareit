@@ -1,4 +1,4 @@
-package ru.practicum.yandex.shareit.item;
+package ru.practicum.yandex.shareit.item.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.yandex.shareit.item.dto.ItemDto;
@@ -8,12 +8,20 @@ import ru.practicum.yandex.shareit.item.model.Item;
 public class ItemMapper {
 
     public ItemDto toDto(Item item) {
-
+        if (item.getItemRequest() != null) {
+            return new ItemDto(
+                    item.getId(),
+                    item.getName(),
+                    item.getDescription(),
+                    item.getAvailable(),
+                    item.getItemRequest().getId());
+        }
         return new ItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getAvailable());
+                item.getAvailable(),
+                0);
     }
 
     public Item toItem(ItemDto itemDto) {

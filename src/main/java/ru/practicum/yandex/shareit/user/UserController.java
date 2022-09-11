@@ -10,47 +10,40 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
-    public UserController(UserService userService, UserMapper userMapper) {
-        this.userService = userService;
-        this.userMapper = userMapper;
+    public UserController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
     @PostMapping
     public UserDto createUser(@Valid @NotNull @RequestBody User user) {
-        return userService.saveUser(user);
+        return userServiceImpl.saveUser(user);
     }
 
     @GetMapping("/{id}")
     public UserDto getUser(@PositiveOrZero @PathVariable long id) {
-        User getUser = userService.findById(id);
-        return userMapper.toDto(getUser);
+        return userServiceImpl.findById(id);
     }
 
     @PatchMapping("/{id}")
     public UserDto patch(@Valid @NotNull @RequestBody UserDto userDto,
                          @PathVariable long id) {
-        return userService.updateUser(userDto, id);
+        return userServiceImpl.updateUser(userDto, id);
     }
 
     @GetMapping
     public List<UserDto> getAllUsers() {
-        return userService.findAll()
-                .stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+        return userServiceImpl.findAll();
     }
 
     @DeleteMapping("/{id}")
     public void delete(@Positive @PathVariable long id) {
-        userService.deleteUserById(id);
+        userServiceImpl.deleteUserById(id);
     }
 }

@@ -19,7 +19,7 @@ public class User {
     @PositiveOrZero
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "id")
     private long id;
     @NotEmpty
     @NotBlank(message = "Name cannot be null or empty")
@@ -28,6 +28,7 @@ public class User {
     @Email(message = "Email should be valid")
     @Column(name = "email")
     private String email;
+
 
     @Override
     public String toString() {

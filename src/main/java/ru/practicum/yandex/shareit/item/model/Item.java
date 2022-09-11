@@ -3,47 +3,49 @@ package ru.practicum.yandex.shareit.item.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.yandex.shareit.request.model.ItemRequest;
 import ru.practicum.yandex.shareit.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table (name = "items")
+@Table(name = "items")
 public class Item {
-    @PositiveOrZero
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "id")
     private long id;
     @NotEmpty
     @NotBlank(message = "Name cannot be null or empty")
-    @Column (name = "name")
+    @Column(name = "name")
     private String name;
     @Size(max = 200, message = "Description must be less then 200 characters")
     @Column(name = "description")
     private String description;
     @NotNull
     @Column(name = "available")
-    private Boolean available; // Статус должен проставлять владелец
-    //@Column(name = "owner_id")
+    private Boolean available;
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private User owner; // владелец вещи
-
-    //@OneToOne
-    //@JoinColumn(name ="id", referencedColumnName = "id")
-   // private ItemRequest request; // если вещь была создана по запросу другого пользователя, то в этом поле будет храниться ссылка на соответствующий запрос.
+    private User owner;
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest itemRequest;
 
     public Item(String name, String description, Boolean available) {
         this.name = name;
         this.description = description;
         this.available = available;
     }
-public Item(String name, String description, Boolean available, User owner) {
+
+    public Item(String name, String description, Boolean available, User owner) {
         this.name = name;
         this.description = description;
         this.available = available;
@@ -60,4 +62,5 @@ public Item(String name, String description, Boolean available, User owner) {
                 ", owner=" + owner +
                 '}';
     }
+
 }

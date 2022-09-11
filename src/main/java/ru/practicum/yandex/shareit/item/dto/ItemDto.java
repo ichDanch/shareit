@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.yandex.shareit.booking.dto.BookingDtoToItem;
 
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ItemDto {
-    @PositiveOrZero
     private long id;
     private String name;
     @Size(max = 200, message = "Description must be less then 200 characters")
@@ -24,11 +22,22 @@ public class ItemDto {
     private BookingDtoToItem nextBooking;
     private BookingDtoToItem lastBooking;
     private List<CommentDto> comments;
+    private long requestId;
 
-    public ItemDto(long id, String name, String description, Boolean available) {
+    public ItemDto(long id, String name, String description, Boolean available, long requestId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
+        this.requestId = requestId;
+    }
+
+    public ItemDto(long id, String name, String description, Boolean available, long requestId, List<CommentDto> comments) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.requestId = requestId;
+        this.comments = comments;
     }
 }
