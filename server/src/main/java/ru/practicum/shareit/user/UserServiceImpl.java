@@ -28,7 +28,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto saveUser(User user) {
         if (user.getEmail() == null) {
-            throw new ValidationException("User email must not be null");
+            throw new ValidationException("User email must not be null" +
+                    "Method [saveUser] class [UserServiceImpl] ");
         }
         User newUser = usersRepository.save(user);
         return userMapper.toDto(newUser);
@@ -38,7 +39,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto updateUser(UserDto userDto, long id) {
         User user = usersRepository.findById(id).orElseThrow(() ->
-                new NotFoundException("Does not contain user with this id or id is invalid " + id));
+                new NotFoundException("Does not contain user with this id or id is invalid " +
+                        "Method [updateUser] class [UserServiceImpl] " + "userId = " + id));
         ;
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
@@ -60,7 +62,8 @@ public class UserServiceImpl implements UserService {
     public UserDto findById(long id) {
         User user = usersRepository.findById(id)
                 .orElseThrow(() ->
-                        new NotFoundException("Does not contain user with this id or id is invalid " + id));
+                        new NotFoundException("Does not contain user with this id or id is invalid " +
+                                "Method [findById] class [UserServiceImpl] " + " id = " + id));
         return userMapper.toDto(user);
     }
 

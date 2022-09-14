@@ -52,19 +52,24 @@ public class BookingServiceImpl implements BookingService {
         Item item = checkItem(itemId);
 
         if (item.getOwner().getId() == userId) {
-            throw new NotFoundException("Сan not be booked twice");
+            throw new NotFoundException("Сan not be booked twice" +
+                    " Method [saveBooking] class [BookingServiceImpl]");
         }
         if (!item.getAvailable()) {
-            throw new ValidationException("Currently unavailable");
+            throw new ValidationException("Currently unavailable" +
+                    " Method [saveBooking] class [BookingServiceImpl]");
         }
         if (bookingDto.getStart().isBefore(LocalDateTime.now()) || bookingDto.getEnd().isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Is it time machine ?");
+            throw new ValidationException("Is it time machine ?" +
+                    " Method [saveBooking] class [BookingServiceImpl]");
         }
         if (bookingDto.getStart() == null) {
-            throw new ValidationException("bookingDto start must not be null");
+            throw new ValidationException("bookingDto start must not be null" +
+                    " Method [saveBooking] class [BookingServiceImpl]");
         }
         if (bookingDto.getEnd() == null) {
-            throw new ValidationException("bookingDto end must not be null");
+            throw new ValidationException("bookingDto end must not be null" +
+                    " Method [saveBooking] class [BookingServiceImpl]");
         }
 
         Booking booking = bookingMapper.toBooking(bookingDto);
@@ -85,10 +90,12 @@ public class BookingServiceImpl implements BookingService {
         User owner = item.getOwner();
         long ownerId = owner.getId();
         if (ownerId != userId) {
-            throw new NotFoundException("Change status can only owner");
+            throw new NotFoundException("Change status can only owner" +
+                    " Method [approveBookingByOwner] class [BookingServiceImpl]");
         }
         if (approved && booking.getStatus().equals(Status.APPROVED)) {
-            throw new ValidationException("Status is already " + Status.APPROVED);
+            throw new ValidationException("Status is already " + "[" + Status.APPROVED + "]" +
+                    " Method [approveBookingByOwner] class [BookingServiceImpl]");
         }
         if (approved) {
             booking.setStatus(Status.APPROVED);
@@ -109,7 +116,8 @@ public class BookingServiceImpl implements BookingService {
         User booker = booking.getBooker();
         long bookerId = booker.getId();
         if (userId != itemOwnerId && userId != bookerId) {
-            throw new NotFoundException("Only owner or booker can get this booking");
+            throw new NotFoundException("Only owner or booker can get this booking"+
+                    "Method [findBookingByIdByItemOwnerOrBooker] class [BookingServiceImpl]");
         }
         return bookingMapper.toBookingDtoToUser(booking);
     }
@@ -119,7 +127,8 @@ public class BookingServiceImpl implements BookingService {
 
         if (from < 0 || size <= 0) {
             throw new ValidationException(
-                    "from: "+ from + " or " +"size: "+ size +" are not valid when findBookingsByCurrentUser");
+                    "from: " + from + " or " + "size: " + size +
+                            " are not valid when [findBookingsByCurrentUser] class [BookingServiceImpl] ");
         }
         User currentUser = checkUser(userId);
         Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("start").descending());
@@ -133,7 +142,8 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDtoToUser> findBookingsByCurrentOwner(int from, int size, long userId, State state) {
         if (from < 0 || size <= 0) {
             throw new ValidationException(
-                    "from: "+ from + " or " +"size: "+ size +" are not valid when findBookingsByCurrentOwner");
+                    "from: " + from + " or " + "size: " + size +
+                            " are not valid when [findBookingsByCurrentOwner] class [BookingServiceImpl] ");
         }
 
         User currentOwner = checkUser(userId);
@@ -142,7 +152,8 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = page.get().collect(Collectors.toList());
 
         if (bookings.isEmpty()) {
-            throw new ValidationException("Need at least one thing when findBookingsByCurrentOwner");
+            throw new ValidationException("Need at least one thing when findBookingsByCurrentOwner" +
+                    "Method [findBookingsByCurrentOwner] class [BookingServiceImpl]");
         }
         return getBookingDtoToUsers(state, bookings);
     }
@@ -192,17 +203,20 @@ public class BookingServiceImpl implements BookingService {
 
     private User checkUser(long userId) {
         return usersRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException("Does not contain user with this id or id is invalid " + userId));
+                new NotFoundException("Does not contain user with this id or id is invalid " +
+                        "Method [checkUser] class [BookingServiceImpl]" + " userId = " + userId));
     }
 
     private Item checkItem(long itemId) {
         return itemsRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
+                new NotFoundException("Does not contain item with this id or id is invalid " +
+                        "Method [checkItem] class [BookingServiceImpl]" + " itemId = " + itemId));
     }
 
     private Booking checkBooking(long bookingId) {
         return bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NotFoundException("Does not contain booking with this id or id is invalid "));
+                .orElseThrow(() -> new NotFoundException("Does not contain booking with this id or id is invalid. " +
+                        "Method [checkBooking] class [BookingServiceImpl]" + " bookerId = " + bookingId));
     }
 
 }

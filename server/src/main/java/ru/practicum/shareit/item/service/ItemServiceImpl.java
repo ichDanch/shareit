@@ -67,13 +67,16 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto saveItem(ItemDto itemDto, long userId) {
         if (itemDto.getAvailable() == null) {
-            throw new ValidationException("itemDto available must not be null");
+            throw new ValidationException("itemDto available must not be null " +
+                    "Method [saveItem] class [ItemServiceImpl] ");
         }
         if (itemDto.getName() == null || itemDto.getName().equals(" ") || itemDto.getName().equals("")) {
-            throw new ValidationException("itemDto name must not be null or blank or empty");
+            throw new ValidationException("itemDto name must not be null or blank or empty " +
+                    "Method [saveItem] class [ItemServiceImpl] ");
         }
         if (itemDto.getDescription() == null) {
-            throw new ValidationException("itemDto description must not be null");
+            throw new ValidationException("itemDto description must not be null " +
+                    "Method [saveItem] class [ItemServiceImpl] ");
         }
 
         User owner = checkUser(userId);
@@ -83,7 +86,8 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getRequestId() != 0) {
             ItemRequest itemRequest = itemRequestsRepository.findById(itemDto.getRequestId()).orElseThrow(() ->
                     new NotFoundException(
-                            "Does not contain itemRequest with this id or id is invalid " + itemDto.getRequestId())
+                            "Does not contain itemRequest with this id or id is invalid " +
+                            "Method [saveItem] class [ItemServiceImpl] "+ itemDto.getRequestId())
             );
             toItem.setItemRequest(itemRequest);
         }
@@ -97,7 +101,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = checkItem(itemId);
 
         if (item.getOwner() == null || item.getOwner().getId() != userId) {
-            throw new NotFoundException("Only the owner can change item");
+            throw new NotFoundException("Only the owner can change item" +
+                    "Method [patchItem] class [ItemServiceImpl] ");
         }
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
@@ -117,7 +122,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> findAllItemsByOwnerId(int from, int size, Long ownerId) {
         if (from < 0 || size <= 0) {
-            throw new ValidationException("from or size are not valid");
+            throw new ValidationException("from or size are not valid" +
+                    "Method [findAllItemsByOwnerId] class [ItemServiceImpl] ");
         }
         User user = checkUser(ownerId);
         Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("id"));
@@ -158,7 +164,8 @@ public class ItemServiceImpl implements ItemService {
         }
 
         if (from < 0 || size <= 0) {
-            throw new ValidationException("from or size are not valid");
+            throw new ValidationException("from or size are not valid. " +
+                    "Method [itemsByNameAndDescription] class [ItemServiceImpl] ");
         }
         Pageable pageWithElements = PageRequest.of(from / size, size, Sort.by("id"));
         Page<Item> page = itemsRepository
@@ -179,7 +186,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = checkItem(itemId);
         Booking booking = checkBooking(userId);
         if (commentDto.getText() == null || commentDto.getText().isBlank()) {
-            throw new ValidationException("text is null or empty");
+            throw new ValidationException("text is null or empty. Method [createCommentByUser] class [ItemServiceImpl] ");
         }
         Comment comment = commentMapper.toComment(commentDto);
         comment.setAuthor(user);
@@ -225,24 +232,28 @@ public class ItemServiceImpl implements ItemService {
 
     private void checkOwner(long userId, Item item) {
         if (item.getOwner().getId() != userId) {
-            throw new NotFoundException("Only the owner can change item");
+            throw new NotFoundException("Only the owner can change item. " +
+                    "Method [checkOwner] class [ItemServiceImpl] " + " userId = " + userId);
         }
     }
 
     private User checkUser(long userId) {
         return usersRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException("Does not contain user with this id or id is invalid " + userId));
+                new NotFoundException("Does not contain [user] with this id or id is invalid. " +
+                        "Method [checkUser] class [ItemServiceImpl]" + " userId = " + userId));
     }
 
     private Item checkItem(long itemId) {
         return itemsRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException("Does not contain item with this id or id is invalid " + itemId));
+                new NotFoundException("Does not contain [item] with this id or id is invalid. " +
+                        "Method [checkUser] class [ItemServiceImpl]" + " itemId = " + itemId));
     }
 
     private Booking checkBooking(long bookerId) {
         return bookingRepository.findBookingByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now())
                 .orElseThrow(() ->
-                        new ValidationException("Does not contain booking with this booker or id is invalid " + bookerId));
+                        new ValidationException("Does not contain [booking] with this booker or id is invalid. " +
+                                "Method [checkBooking] class [ItemServiceImpl]" + " bookerId = " + bookerId));
     }
 
 
