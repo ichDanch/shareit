@@ -26,7 +26,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@Valid @NotNull @RequestBody ItemDto itemDto,
+    public ItemDto createItem(@RequestBody ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") long userId) {
 
         return itemServiceImpl.saveItem(itemDto, userId);
@@ -34,15 +34,15 @@ public class ItemController {
     }
 
     @PatchMapping({"/{itemId}"})
-    public ItemDto patchItem(@Valid @RequestBody ItemDto itemDto,
+    public ItemDto patchItem(@RequestBody ItemDto itemDto,
                              @PathVariable long itemId,
                              @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemServiceImpl.patchItem(itemDto, itemId, userId);
     }
 
     @GetMapping({"/{itemId}"})
-    public ItemDto findItemById(@PositiveOrZero @PathVariable int itemId,
-                                @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
+    public ItemDto findItemById(@PathVariable int itemId,
+                                @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemServiceImpl.findById(itemId, userId);
 
     }
@@ -50,7 +50,7 @@ public class ItemController {
     @GetMapping
     public List<ItemDto> findAllItemsByOwnerId(@RequestParam(defaultValue = "0") int from,
                                                @RequestParam(defaultValue = "20") int size,
-                                               @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long ownerId) {
+                                               @RequestHeader("X-Sharer-User-Id") long ownerId) {
         return itemServiceImpl.findAllItemsByOwnerId(from, size, ownerId);
     }
 
@@ -62,16 +62,16 @@ public class ItemController {
     }
 
     @DeleteMapping({"/{itemId}"})
-    public void deleteItem(@PositiveOrZero @PathVariable int itemId,
-                           @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
+    public void deleteItem(@PathVariable int itemId,
+                           @RequestHeader("X-Sharer-User-Id") long userId) {
 
         itemServiceImpl.deleteItemById(itemId, userId);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto createComment(@Valid @NotNull @RequestBody CommentDto commentDto,
+    public CommentDto createComment(@RequestBody CommentDto commentDto,
                                     @PathVariable long itemId,
-                                    @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
+                                    @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemServiceImpl.createCommentByUser(commentDto, itemId, userId);
 
     }

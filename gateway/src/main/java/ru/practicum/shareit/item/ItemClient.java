@@ -6,17 +6,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.Map;
 
 @Service
@@ -34,7 +26,7 @@ public class ItemClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> createUser(ItemDto itemDto, long userId) {
+    public ResponseEntity<Object> createItem(ItemDto itemDto, long userId) {
         return post("", userId, itemDto);
     }
 

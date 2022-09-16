@@ -1,4 +1,4 @@
-package ru.practicum.yandex.shareit.user;
+package ru.practicum.shareit.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

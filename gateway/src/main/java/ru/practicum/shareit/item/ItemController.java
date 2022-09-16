@@ -24,7 +24,7 @@ public class ItemController {
     public ResponseEntity<Object> createItem(@Valid @NotNull @RequestBody ItemDto itemDto,
                                              @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("createItem {}. Method [createItem] class [ItemController]", itemDto);
-        return itemClient.createUser(itemDto, userId);
+        return itemClient.createItem(itemDto, userId);
 
     }
 
