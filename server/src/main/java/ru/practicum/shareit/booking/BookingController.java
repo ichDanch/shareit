@@ -5,13 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoToUser;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
-import ru.practicum.shareit.user.model.User;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import java.util.Comparator;
 import java.util.List;
 
 @RestController

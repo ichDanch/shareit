@@ -18,7 +18,6 @@ import ru.practicum.shareit.user.UserServiceImpl;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +82,11 @@ public class RequestServiceTests {
     @Order(2)
     void shouldReturnItemRequestDtoWhenFindRequestsByOwner() {
         long userOneId = userService.saveUser(userOne).getId();
-        long requestDtoId = itemRequestService.saveItemRequest(itemRequestDto,userOneId).getId();
+        long requestDtoId = itemRequestService.saveItemRequest(itemRequestDto, userOneId).getId();
         long userTwoId = userService.saveUser(userTwo).getId();
         long itemId = itemService.saveItem(itemDtoOne, userTwoId).getId();
 
-        ItemRequestDto findRequest = itemRequestService.findRequestById(userTwoId,requestDtoId);
+        ItemRequestDto findRequest = itemRequestService.findRequestById(userTwoId, requestDtoId);
 
         assertEquals(itemRequestDtoWithItem.getId(), findRequest.getId());
         assertEquals(itemRequestDtoWithItem.getDescription(), findRequest.getDescription());

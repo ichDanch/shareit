@@ -7,9 +7,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
-import javax.validation.Valid;
-import org.jetbrains.annotations.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -36,7 +33,7 @@ public class ItemController {
     @PatchMapping({"/{itemId}"})
     public ItemDto patchItem(@RequestBody ItemDto itemDto,
                              @PathVariable long itemId,
-                             @PositiveOrZero @RequestHeader("X-Sharer-User-Id") long userId) {
+                             @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemServiceImpl.patchItem(itemDto, itemId, userId);
     }
 

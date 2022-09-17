@@ -116,7 +116,7 @@ public class BookingServiceImpl implements BookingService {
         User booker = booking.getBooker();
         long bookerId = booker.getId();
         if (userId != itemOwnerId && userId != bookerId) {
-            throw new NotFoundException("Only owner or booker can get this booking"+
+            throw new NotFoundException("Only owner or booker can get this booking" +
                     "Method [findBookingByIdByItemOwnerOrBooker] class [BookingServiceImpl]");
         }
         return bookingMapper.toBookingDtoToUser(booking);

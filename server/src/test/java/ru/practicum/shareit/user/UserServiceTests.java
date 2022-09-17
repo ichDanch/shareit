@@ -7,9 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
-import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.UserServiceImpl;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UsersRepository;
@@ -52,21 +49,7 @@ public class UserServiceTests {
         assertEquals(expectedUserOneDto.getName(), actualUserDto.getName());
         assertEquals(expectedUserOneDto.getEmail(), actualUserDto.getEmail());
     }
-// написать метод update
-//    @Test
-//    void shouldReturnUserDtoWhenUpdateUser() {
-//        when(usersRepository.findById(1L)).thenReturn(Optional.of(userOne));
-//        when(usersRepository.save(any())).thenAnswer(returnsFirstArg());
-//
-//        var var = userService.updateUser(expectedUserOneDto,1L);
-//
-//        verify(usersRepository, times(1)).findById(1L);
-//        verify(usersRepository, times(1)).save(any());
-//
-//        assertNotNull(var);
-//
-//        assertEquals(NEW_NAME, result.getName());
-//    }
+
 
     @Test
     void shouldReturnValidationExceptionWhenEmailNull() {
@@ -97,12 +80,6 @@ public class UserServiceTests {
         assertThat(usersDto, equalTo(List.of(expectedUserOneDto, expectedUserTwoDto)));
     }
 
-//    @Test
-//    void  shouldDeleteUserById() {
-//        //when(usersRepository.deleteById(userOne.getId())).then();
-//        userService.deleteUserById(1L);
-//       verify(usersRepository, times(1)).deleteById(userOne.getId());
-//    }
 
     @Test
     void shouldThrowNotFoundExceptionWhenDeleteWrongId() {
