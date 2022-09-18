@@ -62,35 +62,4 @@ public class ItemClient extends BaseClient {
     public ResponseEntity<Object> createComment(CommentDto commentDto, long itemId, long userId) {
         return post("/" + itemId + "/comment", userId, commentDto);
     }
-
-//    @PostMapping
-//    public ResponseEntity<Object> createUser(@Valid @NotNull @RequestBody User user) {
-//        log.info("create user {}. Method [createUser] class [UserController]", user);
-//        return userClient.createUser(user);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Object> getUser(@PositiveOrZero @PathVariable(name = "id") long userId) {
-//        log.info("getUser {}. Method [getUser] class [UserController]", userId);
-//        return userClient.getUserById(userId);
-//    }
-//
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<Object> patchUser(@Valid @NotNull @RequestBody UserDto userDto,
-//                                            @PathVariable(name = "id") long userId) {
-//        log.info("patchUser {}. Method [patchUser] class [UserController]", userId);
-//        return userClient.updateUser(userDto, userId);
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<Object> getAllUsers() {
-//        log.info("getAllUsers. Method [getAllUsers] class [UserController]");
-//        return userClient.getAllUsers();
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Object> deleteUser(@Positive @PathVariable(name = "id") long userId) {
-//        log.info("deleteUser {}. Method [deleteUser] class [UserController]", userId);
-//        return userClient.deleteUserById(userId);
-//    }
 }

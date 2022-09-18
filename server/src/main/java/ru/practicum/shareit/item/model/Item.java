@@ -7,10 +7,6 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Data
 @Entity
@@ -22,14 +18,10 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-    @NotEmpty
-    @NotBlank(message = "Name cannot be null or empty")
     @Column(name = "name")
     private String name;
-    @Size(max = 200, message = "Description must be less then 200 characters")
     @Column(name = "description")
     private String description;
-    @NotNull
     @Column(name = "available")
     private Boolean available;
     @ManyToOne

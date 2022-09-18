@@ -31,12 +31,6 @@ public class BookingClient extends BaseClient {
         return post("", userId, bookingDto);
     }
 
-
-//    public ResponseEntity<Object> approveOrRejectBookingByOwner(long bookingId, long userId, boolean approved) {
-//        Map<String, Object> parameters = Map.of("approved", approved);
-//        return patch("/" + bookingId + "?approved={approved}", userId, parameters);
-//    }
-
     public ResponseEntity<Object> approveOrRejectBookingByOwner(long bookingId, long userId, boolean approved) {
         Map<String, Object> parameters = Map.of("approved", approved);
         return patch("/" + bookingId + "?approved={approved}", userId, parameters, null);
@@ -47,16 +41,6 @@ public class BookingClient extends BaseClient {
         return get("/" + bookingId, userId);
     }
 
-//    public ResponseEntity<Object> findBookingsByCurrentUser(long from, long size, long userId, State state) {
-//        Map<String, Object> parameters = Map.of(
-//                "state", state.name(),
-//                "from", from,
-//                "size", size
-//
-//        );
-//        return get("?state={state}&from={from}&size={size}", userId, parameters);
-//    }
-
     public ResponseEntity<Object> getBookings(long userId, State state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
@@ -65,14 +49,6 @@ public class BookingClient extends BaseClient {
         );
         return get("?state={state}&from={from}&size={size}", userId, parameters);
     }
-//    public ResponseEntity<Object> findBookingsByCurrentOwner(long from, long size, long userId, State state) {
-//        Map<String, Object> parameters = Map.of(
-//                "state", state.name(),
-//                "from", from,
-//                "size", size
-//        );
-//        return get("/owner?state={state}&from={from}&size={size}", userId, parameters);
-//    }
 
     public ResponseEntity<Object> getBookingCurrentOwner(long userId, State state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
