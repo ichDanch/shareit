@@ -8,9 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 
 @Controller
 @RequestMapping(path = "/users")
@@ -22,19 +20,19 @@ public class UserController {
     private final UserClient userClient;
 
     @PostMapping
-    public ResponseEntity<Object> createUser(@Valid @NotNull @RequestBody UserDto user) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody UserDto user) {
         log.info("create user {}. Method [createUser] class [UserController]", user);
         return userClient.createUser(user);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getUser(@PositiveOrZero @PathVariable(name = "id") long userId) {
+    public ResponseEntity<Object> getUser(@PathVariable(name = "id") long userId) {
         log.info("getUser {}. Method [getUser] class [UserController]", userId);
         return userClient.getUserById(userId);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> patchUser(@Valid @NotNull @RequestBody UserDto userDto,
+    public ResponseEntity<Object> patchUser(@RequestBody UserDto userDto,
                                             @PathVariable(name = "id") long userId) {
         log.info("patchUser {}. Method [patchUser] class [UserController]", userId);
         return userClient.updateUser(userDto, userId);
